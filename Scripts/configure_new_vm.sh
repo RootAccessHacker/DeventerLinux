@@ -12,3 +12,6 @@ sudo sed -i "s|$currentHostname|$newHostname|g" /etc/hostname
 
 # Reset machine-id
 sudo truncate -s 0 /etc/machine-id
+
+# Reboot server
+sudo reboot now

@@ -1,0 +1,6 @@
+---
+# ansible-playbook dns_config.yaml -i inventory
+- name: Configure DNS on selected hosts
+  hosts: dns-servers
+  roles:
+    - dns-setup

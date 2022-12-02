@@ -1,12 +1,8 @@
-#[webservers]
-#alpha.example.org
-#beta.example.org
-#192.168.1.100
-#192.168.1.110
+# [dns-servers]
+# 172.16.xx.xx
 
-#[dbservers]
-#
-#db01.intranet.mydomain.net
-#db02.intranet.mydomain.net
-#10.25.1.56
-#10.25.1.57
+# [proxy-servers]
+# 172.16.xx.xx
+
+# [mail-servers]
+# 172.16.xx.xx

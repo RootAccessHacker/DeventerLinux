@@ -1,7 +1,0 @@
-- name: Configure Routers
-  hosts: routers
-  tasks:
-    - name: Ping routers
-      ansible.builtin.ping:
-    - name: Run configuration script
-      shell: ../Scripts/router.sh

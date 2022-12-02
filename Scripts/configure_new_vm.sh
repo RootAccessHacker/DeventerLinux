@@ -5,7 +5,7 @@ currentHostname=$(hostname)
 
 # Ask new hostname
 echo -n "What should the hostname of this machine be?: "
-read -r newHostname
+read newHostname
 
 # Set new hostname
 sudo sed -i "s|$currentHostname|$newHostname|g" /etc/hostname

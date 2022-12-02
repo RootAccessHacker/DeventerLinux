@@ -30,11 +30,11 @@ read -r gateway
 echo -n "DNS1: "
 read -r dns1
 
-sudo sed -i "s|ONBOOT=*|ONBOOY=yes|g" /etc/sysconfig/network-scripts/$networkConfig
-sudo sed -i "s|IPADDR=*|IPADDR=$ipaddr|g" /etc/sysconfig/network-scripts/$networkConfig
-sudo sed -i "s|PREFIX=*|PREFIX=$prefix|g" /etc/sysconfig/network-scripts/$networkConfig
-sudo sed -i "s|GATEWAY=*|GATEWAY=$gateway|g" /etc/sysconfig/network-scripts/$networkConfig
-sudo sed -i "s|DNS1=*|DNS1=$dns1|g" /etc/sysconfig/network-scripts/$networkConfig
+sudo sed -i "s|ONBOOT=.|ONBOOY=yes|g" /etc/sysconfig/network-scripts/$networkConfig
+sudo sed -i "s|IPADDR=.|IPADDR=$ipaddr|g" /etc/sysconfig/network-scripts/$networkConfig
+sudo sed -i "s|PREFIX=.|PREFIX=$prefix|g" /etc/sysconfig/network-scripts/$networkConfig
+sudo sed -i "s|GATEWAY=.|GATEWAY=$gateway|g" /etc/sysconfig/network-scripts/$networkConfig
+sudo sed -i "s|DNS1=.|DNS1=$dns1|g" /etc/sysconfig/network-scripts/$networkConfig
 
 # Reboot server
 sudo reboot now

@@ -4,7 +4,7 @@
 currentHostname=$(hostname)
 
 # Ask new hostname
-echo -n "What should the hostname of this machine be?"
+echo "What should the hostname of this machine be?"
 read -r newHostname
 
 # Set new hostname

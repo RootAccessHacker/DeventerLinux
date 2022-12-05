@@ -36,5 +36,8 @@ sudo sed -i "s|PREFIX=.*|PREFIX=$prefix|g" /etc/sysconfig/network-scripts/$netwo
 sudo sed -i "s|GATEWAY=.*|GATEWAY=$gateway|g" /etc/sysconfig/network-scripts/$networkConfig
 sudo sed -i "s|DNS1=.*|DNS1=$dns1|g" /etc/sysconfig/network-scripts/$networkConfig
 
+# Remove wget log
+rm wget-log*
+
 # Reboot server
 sudo reboot now

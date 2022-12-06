@@ -1,0 +1,34 @@
+---
+#ansible-playbook apache.yaml -i ../inventory --ask-pass --ask-become-pass
+- name: setup apache webserver
+  hosts: webserver
+  become: true
+  tasks:
+  - name: Httpd install
+    yum:
+      name: httpd
+      state: latest
+
+  - name: Index.hyml
+    copy:
+      dest: /var/www/html/index.html
+      content: |
+        Custom Web Page
+
+  - name: Change welcome.conf
+    copy:
+      dest: /etc/httpd/conf.d/welcome.conf
+      content: |
+        #Empty all configs
+  - name: httpd service enabled
+    service:
+      name: httpd
+      enabled: true
+      state: started
+
+  - name: open firewall
+    ansible.posix.firewalld:
+      service: http
+      state: enabled
+      immediate: true
+      permanent: true

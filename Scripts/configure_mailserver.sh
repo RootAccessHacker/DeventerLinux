@@ -38,4 +38,10 @@ sudo sed -i "s|#home_mailbox = Maildir/|home_mailbox = Maildir/|g" /etc/postfix/
 sudo sed -i "s|#mydomain = domain.tld|mydomain = $domain|g" /etc/postfix/main.cf
 
 
+# start services
+sudo systemctl start postfix
+sudo systemctl enable postfix
+sudo postfix reload
+
+
 #sudo systemctl reboot

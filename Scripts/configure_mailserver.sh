@@ -40,16 +40,15 @@ sudo echo "$ipaddr $hname.$domain" >> /etc/hosts
 sudo sed -i "s|#myhostname = host.domain.tld|myhostname = $hname.$domain|g" /etc/postfix/main.cf
 sudo sed -i "s|#mydomain = domain.tld|mydomain = $domain|g" /etc/postfix/main.cf
 sudo sed -i "s|inet_interfaces = localhost|inet_interfaces = all|g" /etc/postfix/main.cf
-sudo sed -i "s|#home_mailb
-ox = Maildir/|home_mailbox = Maildir/|g" /etc/postfix/main.cf 
+sudo sed -i "s|#home_mailbox = Maildir/|home_mailbox = Maildir/|g" /etc/postfix/main.cf 
 
 # new 2
 sudo sed -i '183d;' /etc/postfix/main.cf
 sudo sed -i "182i mydestination = \$myhostname, localhost.\$mydomain, localhost, \$mydomain" /etc/postfix/main.cf
 
 # new 1
-sudo sed -i "s|#myorigin = $mydomain|myorigin = $mydomain|g" /etc/postfix/main.cf
 sudo sed -i "s|myorigin = $myhostname|#myorigin = $myhostname|g" /etc/postfix/main.cf
+sudo sed -i "s|#myorigin = $mydomain|myorigin = $mydomain|g" /etc/postfix/main.cf
 
 sudo sed -i "286i mynetworks = $networks" /etc/postfix/main.cf
 

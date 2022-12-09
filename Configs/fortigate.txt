@@ -1,0 +1,104 @@
+config system interface
+    edit "wan1"
+        set vdom "root"
+        set ip 145.37.235.209 255.255.255.0
+        set allowaccess ping fgfm
+        set type physical
+        set alias "wan1"
+        set role wan
+        set snmp-index 1
+    next
+    edit "wan2"
+        set vdom "root"
+        set mode dhcp
+        set allowaccess ping fgfm
+        set type physical
+        set role wan
+        set snmp-index 2
+    next
+    edit "dmz"
+        set vdom "root"
+        set ip 10.10.10.1 255.255.255.0
+        set allowaccess ping https fgfm fabric
+        set type physical
+        set role dmz
+        set snmp-index 3
+    next
+    edit "internal1"
+        set vdom "root"
+        set type physical
+        set snmp-index 4
+    next
+    edit "internal2"
+        set vdom "root"
+        set type physical
+        set snmp-index 5
+    next
+    edit "internal3"
+        set vdom "root"
+        set type physical
+        set snmp-index 6
+    next
+    edit "internal4"
+        set vdom "root"
+        set type physical
+        set snmp-index 7
+    next
+    edit "internal5"
+        set vdom "root"
+        set type physical
+        set snmp-index 8
+    next
+    edit "internal6"
+        set vdom "root"
+        set type physical
+        set snmp-index 9
+    next
+    edit "internal7"
+        set vdom "root"
+        set type physical
+        set snmp-index 10
+    next
+    edit "modem"
+        set vdom "root"
+        set mode pppoe
+        set status down
+        set type physical
+        set snmp-index 11
+    next
+    edit "ssl.root"
+        set vdom "root"
+        set type tunnel
+        set alias "SSL VPN interface"
+        set snmp-index 12
+    next
+    edit "internal"
+        set vdom "root"
+        set ip 192.168.1.99 255.255.255.0
+        set allowaccess ping https ssh fgfm fabric
+        set type hard-switch
+        set stp enable
+        set role lan
+        set snmp-index 13
+    next
+    edit "fortilink"
+        set vdom "root"
+        set fortilink enable
+        set ip 169.254.1.1 255.255.255.0
+        set allowaccess ping fabric
+        set type aggregate
+        set lldp-reception enable
+        set lldp-transmission enable
+        set snmp-index 14
+    next
+    edit "VLAN_1106"
+        set vdom "root"
+        set ip 10.0.1.2 255.255.255.0
+        set allowaccess ping https ssh
+        set device-identification enable
+        set role lan
+        set snmp-index 15
+        set interface "internal"
+        set vlanid 1106
+    next
+end

@@ -20,16 +20,16 @@
       enabled: yes
   
   - name: Ufw enabled
-        community.general.ufw:
-          state: "enabled"
-          policy: "deny"
-          logging: "on"
+    community.general.ufw:
+      state: "enabled"
+      policy: "deny"
+      logging: "on"
 
   - name: Ufw rules on port 514
-        community.general.ufw:
-          rule: "allow"
-          port: "514"
-          proto: "tcp"
+    community.general.ufw:
+      rule: "allow"
+      port: "514"
+      proto: "tcp"
 
   - name: Add template lines to conf
     lineinfile:
@@ -42,8 +42,6 @@
       - '*.* ?FILENAME'
 
   - name: "Ansible Lineinfile Multiple Lines"
-    become: yes
-    become_user: root
     lineinfile:
       path: /etc/httpd/conf/httpd.conf
       regexp: '{{item.From}}'

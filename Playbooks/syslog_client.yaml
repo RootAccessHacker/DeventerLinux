@@ -23,3 +23,8 @@
     lineinfile:
     dest: logs/testfile.log
     line: "*.* @@{{ ansible_host }}:514"
+
+  - name: Restart syslog
+    ansible.builtin.service:
+      name: rsyslog
+      state: restarted

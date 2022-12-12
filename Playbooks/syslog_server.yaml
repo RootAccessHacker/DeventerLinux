@@ -52,3 +52,8 @@
     with_items:
       - { From: '#module\(load="imtcp"\)', To: 'module\(load="imtcp"\)'}
       - { From: '#input\(type="tcp" port="514"\)', To: 'input\(type="tcp" port="514"\)'}
+
+  - name: Restart syslog
+    ansible.builtin.service:
+      name: rsyslog
+      state: restarted

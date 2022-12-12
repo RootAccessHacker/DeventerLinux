@@ -19,19 +19,19 @@
       name: rsyslog
       enabled: yes
   
-  - name: ufw enabled
+  - name: Ufw enabled
         community.general.ufw:
           state: "enabled"
           policy: "deny"
           logging: "on"
 
-  - name: ufw rules
+  - name: Ufw rules on port 514
         community.general.ufw:
           rule: "allow"
           port: "514"
           proto: "tcp"
 
-  - name: Swap/ edit lines in config
+  - name: Add template lines to conf
     lineinfile:
       dest: /etc/rsyslog.conf
       line: "{{ item }}"

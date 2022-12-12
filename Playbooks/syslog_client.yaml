@@ -9,7 +9,7 @@
       name: rsyslog
       state: present
 
-  - name: Start service rsyslog, if not started
+  - name: Start service rsyslog
     ansible.builtin.service:
       name: rsyslog
       state: started

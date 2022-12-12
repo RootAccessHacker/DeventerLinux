@@ -1,11 +1,11 @@
 ---
-#ansible-playbook syslog.yaml -i ../inventory --ask-pass --ask-become-pass
+#ansible-playbook syslog_client.yaml -i ../inventory --ask-pass --ask-become-pass
 - name: Configure syslog server
-  hosts: servers
+  hosts: logclient
   become: true
   tasks:
   - name: Install rsyslog
-    apt:
+    dnf:
       name: rsyslog
       state: present
 
@@ -19,10 +19,7 @@
       name: rsyslog
       enabled: yes
   
-  - name: Swap/ edit lines in config
+  - name: Add send line to logserver
     lineinfile:
-      dest: logs/testfile.log
-      line: 'module(load="imudp")' #new text
-      regexp: '#module\(load="imudp"\)' #old text
-      state: present
-      create: true
+    dest: logs/testfile.log
+    line: "*.* @@{{ ansible_host }}:514"

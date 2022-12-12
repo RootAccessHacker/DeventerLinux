@@ -1,0 +1,42 @@
+---
+#ansible-playbook syslog_server.yaml -i ../inventory --ask-pass --ask-become-pass
+- name: Configure syslog server
+  hosts: logserver
+  become: true
+  tasks:
+  - name: Install rsyslog
+    dnf:
+      name: rsyslog
+      state: present
+
+  - name: Start service rsyslog, if not started
+    ansible.builtin.service:
+      name: rsyslog
+      state: started
+
+  - name: Enable service rsyslog to start on boot
+    ansible.builtin.service:
+      name: rsyslog
+      enabled: yes
+  
+  - name: Swap/ edit lines in config
+    lineinfile:
+      dest: /etc/rsyslog.conf
+      line: "{{ item }}"
+      state: present
+      create: true
+    loop:
+      - '$template FILENAME,"/varlog/%HOSTNAME%/syslog.log"'
+      - '*.* ?FILENAME'
+
+  - name: "Ansible Lineinfile Multiple Lines"
+    become: yes
+    become_user: root
+    lineinfile:
+      path: /etc/httpd/conf/httpd.conf
+      regexp: '{{item.From}}'
+      line: '{{item.To}}'
+      state: present  
+    with_items:
+      - { From: '#module\(load="imudp"\)', To: 'module\(load="imudp"\)'}
+      - { From: '#input\(type="tcp" port="514"\)', To: 'input\(type="tcp" port="514"\)'}

@@ -9,3 +9,6 @@
 
 [webserver]
 10.0.0.16
+
+[logserver]
+10.0.0.17

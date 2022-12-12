@@ -19,6 +19,18 @@
       name: rsyslog
       enabled: yes
   
+  - name: ufw enabled
+        community.general.ufw:
+          state: "enabled"
+          policy: "deny"
+          logging: "on"
+
+  - name: ufw rules
+        community.general.ufw:
+          rule: "allow"
+          port: "514"
+          proto: "tcp"
+
   - name: Swap/ edit lines in config
     lineinfile:
       dest: /etc/rsyslog.conf
@@ -38,5 +50,5 @@
       line: '{{item.To}}'
       state: present  
     with_items:
-      - { From: '#module\(load="imudp"\)', To: 'module\(load="imudp"\)'}
+      - { From: '#module\(load="imtcp"\)', To: 'module\(load="imtcp"\)'}
       - { From: '#input\(type="tcp" port="514"\)', To: 'input\(type="tcp" port="514"\)'}

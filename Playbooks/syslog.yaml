@@ -1,0 +1,28 @@
+---
+#ansible-playbook syslog.yaml -i ../inventory --ask-pass --ask-become-pass
+- name: Configure syslog server
+  hosts: servers
+  become: true
+  tasks:
+  - name: Install rsyslog
+    apt:
+      name: rsyslog
+      state: present
+
+  - name: Start service rsyslog, if not started
+    ansible.builtin.service:
+      name: rsyslog
+      state: started
+
+  - name: Enable service rsyslog to start on boot
+    ansible.builtin.service:
+      name: rsyslog
+      enabled: yes
+  
+  - name: Swap/ edit lines in config
+    lineinfile:
+      dest: logs/testfile.log
+      line: 'module(load="imudp")' #new text
+      regexp: '#module\(load="imudp"\)' #old text
+      state: present
+      create: true

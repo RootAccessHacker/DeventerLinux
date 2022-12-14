@@ -10,5 +10,5 @@
 [webserver]
 10.0.0.16
 
-[logserver]
+[zabbixserver]
 10.0.0.17

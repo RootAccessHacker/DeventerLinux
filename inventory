@@ -1,3 +1,15 @@
+[Mailserver]
+10.0.0.12
+
+[Domain_controller]
+10.0.0.13
+
+[Proxy]
+10.0.0.14
+
+[Script_executor]
+10.0.0.15
+
 [webserver]
 10.0.0.16
 

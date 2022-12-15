@@ -1,11 +1,17 @@
-# [dns-servers]
-# 172.16.xx.xx
+[Mailserver]
+10.0.0.12
 
-# [proxy-servers]
-# 172.16.xx.xx
+[Domain_controller]
+10.0.0.13
 
-# [mail-servers]
-# 172.16.xx.xx
+[Proxy]
+10.0.0.14
+
+[Script_executor]
+10.0.0.15
 
 [webserver]
 10.0.0.16
+
+[zabbixserver]
+10.0.0.17

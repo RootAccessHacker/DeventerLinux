@@ -9,7 +9,7 @@
       name: httpd
       state: latest
 
-  - name: Index.hyml
+  - name: Index.html
     copy:
       dest: /var/www/html/index.html
       content: |

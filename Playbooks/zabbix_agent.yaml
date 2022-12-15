@@ -1,7 +1,7 @@
 ---
 #ansible-playbook zabbix_agent.yaml -i ../inventory --ask-pass --ask-become-pass
 - name: setup zabbix agent
-  hosts: all
+  hosts: webserver
   become: true
   vars:
     zabbix_server: hostvars[zabbixserver]['ansible_default_ipv4']['address']

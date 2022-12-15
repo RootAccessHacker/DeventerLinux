@@ -1,12 +1,3 @@
-# [dns-servers]
-# 172.16.xx.xx
-
-# [proxy-servers]
-# 172.16.xx.xx
-
-# [mail-servers]
-# 172.16.xx.xx
-
 [webserver]
 10.0.0.16
 

@@ -132,11 +132,3 @@ sudo service dovecot restart
 # change mydestination
 # change mode cacert.pem to 644
 # change cert permissions
-
-
-
-
-
-
-
-

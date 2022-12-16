@@ -1,6 +1,6 @@
 ---
 #ansible-playbook apache.yaml -i ../inventory --ask-pass --ask-become-pass
-- name: setup apache webserver
+- name: Setup apache webserver
   hosts: webserver
   become: true
   tasks:
@@ -20,13 +20,14 @@
       dest: /etc/httpd/conf.d/welcome.conf
       content: |
         #Empty all configs
-  - name: httpd service enabled
+
+  - name: Httpd service enabled
     service:
       name: httpd
       enabled: true
       state: started
 
-  - name: open firewall
+  - name: Open firewall
     ansible.posix.firewalld:
       service: http
       state: enabled

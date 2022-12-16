@@ -1,0 +1,31 @@
+---
+#ansible-playbook clamav.yaml -i ../inventory --ask-pass --ask-become-pass
+- name: Install ClamAV service
+  hosts: test
+  become: true
+  tasks:
+  - name: Install ClamAV basics
+    yum: name=clamav state=latest
+
+  - name: Install ClamAV scanner
+    yum: name=clamav-scanner state=latest
+
+  - name: Install ClamAV updater
+    yum: name=clamav-update state=latest
+  
+  - name: Add template lines to conf
+    lineinfile:
+      dest: /etc/cron.d/ansible.cron
+      line: "0 3 * * * root /usr/bin/freshclam ; /usr/bin/clamscan / --recursive=yes -i | mail -s clamav_log_`hostname` support@example.com -"
+      state: present
+      create: true
+
+  - name: Add template lines to conf
+    lineinfile:
+      dest: /etc/cron.d/ansible.cron
+      line: "{{ item }}"
+      state: present
+      create: true
+      loop:
+        - 'LogSyslog yes'
+        - 'DatabaseMirror database.clamav.net'

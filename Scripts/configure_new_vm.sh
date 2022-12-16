@@ -30,15 +30,22 @@ read -r gateway
 echo -n "DNS1: "
 read -r dns1
 
+ip a
+
+echo -n "Network adapter name: "
+read -r adapterName
+
 if [ "$operatingSystem" == "ubuntu" ]; then
 	# Configure network settings
+	ip a
+	
 	networkConfig="00-installer-config.yaml"
 	sudo -i <<-EOF
 	echo -e "
 	# This is the network config written by 'subiquity'
 	network:
 	  ethernets:
-	    enp6s18:
+	    $adapterName:
 	      addresses:
 	      - $ipaddr/$prefix
 	      gateway4: $gateway
@@ -53,7 +60,7 @@ if [ "$operatingSystem" == "ubuntu" ]; then
 
 else
 	# Configure network settings
-	networkConfig="ens192"
+	networkConfig="ifcfg-$adapterName"
 	sudo sed -i "s|ONBOOT=.*|ONBOOT=yes|g" /etc/sysconfig/network-scripts/$networkConfig
 	sudo sed -i "s|IPADDR=.*|IPADDR=$ipaddr|g" /etc/sysconfig/network-scripts/$networkConfig
 	sudo sed -i "s|PREFIX=.*|PREFIX=$prefix|g" /etc/sysconfig/network-scripts/$networkConfig

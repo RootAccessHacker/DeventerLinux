@@ -1,0 +1,24 @@
+---
+- name: restart_firewall
+  ansible.builtin.service:
+    name: firewalld
+    state: restarted
+    enabled: true
+
+- name: restart_zabbix
+  ansible.builtin.service:
+    name: zabbix-agent
+    state: restarted
+    enabled: true
+
+- name: start_freshclam
+  ansible.builtin.service:
+    name: freshclam
+    state: restarted
+    enabled: true
+
+- name: start_clamd_scan
+  ansible.builtin.service:
+    name: clamd@scan
+    state: restarted
+    enabled: true

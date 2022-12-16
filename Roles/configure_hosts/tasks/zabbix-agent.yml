@@ -1,0 +1,17 @@
+---
+- name: "Add server ip to config"
+  lineinfile:
+    path: /etc/zabbix/zabbix_agentd.conf
+    regexp: '{{item.From}}'
+    line: '{{item.To}}'
+    state: present  
+  with_items:
+    - { From: 'Server=', To: 'Server={{ zabbix_server }}'}
+    - { From: 'ServerActive=', To: 'ServerActive={{ zabbix_server }}'}
+    - { From: 'Hostname=', To: 'Hostname={{ ansible_hostname }}'}
+
+- name: Open port 10050 for zabbix-server
+  ansible.posix.firewalld:
+    port: 10050/tcp
+    permanent: yes
+    state: enabled

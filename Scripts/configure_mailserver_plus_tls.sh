@@ -69,8 +69,14 @@ sudo dnf install dovecot -y
 sudo cp /etc/postfix/main.cf /etc/postfix/main.cf.default
 
 
+# Configure postfix main.cf
 sudo sed -i "s|#mydomain = domain.tld|mydomain = udeventer.nl|g" /etc/postfix/main.cf
-sudo sed -i "s|#myorigin = $mydomain|myorigin = $mydomain|g" /etc/postfix/main.cf
+sudo sed -i '/myorigin = $myhostname/s/^/#/g' /etc/postfix/main.cf
+sudo sed -i '/#myorigin = $mydomain/s/^#//g' /etc/postfix/main.cf
+
+sudo sed -i '183d;' /etc/postfix/main.cf
+sudo sed -i "182i mydestination = \$myhostname, localhost.\$mydomain, localhost, \$mydomain" /etc/postfix/main.cf
+
 sudo sed -i "s|inet_interfaces = localhost|inet_interfaces = all|g" /etc/postfix/main.cf
 sudo sed -i "s|#home_mailbox = Maildir/|home_mailbox = Maildir/|g" /etc/postfix/main.cf 
 
@@ -90,9 +96,6 @@ sudo postconf -e "smtpd_tls_cert_file = /etc/ssl/certs/udeventer.crt"
 sudo postconf -e "smtpd_tls_CAfile = /etc/ssl/certs/cacert.pem"
 sudo postconf -e "smtpd_tls_session_cache_timeout = 3600"
 
-
-sudo service postfix restart
-sudo postfix reload
 
 ## 10-ssl.conf
 sudo sed -i "14i ssl_cert = </etc/ssl/certs/udeventer.crt" /etc/dovecot/conf.d/10-ssl.conf
@@ -118,12 +121,17 @@ sudo sed -i "112d;" /etc/dovecot/conf.d/10-master.conf
 sudo sed -i "s|#   mail_location = maildir:~/Maildir|   mail_location = maildir:~/Maildir|g" /etc/dovecot/conf.d/10-mail.conf
 sudo sed -i "s|#mail_privileged_group =|mail_privileged_group = mail|g" /etc/dovecot/conf.d/10-mail.conf
 
+# Reload services
+sudo service postfix restart
+sudo postfix reload
 
+sudo service dovecot restart
 
-
-
-
-
+#TODO
+# change network
+# change mydestination
+# change mode cacert.pem to 644
+# change cert permissions
 
 
 

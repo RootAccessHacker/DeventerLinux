@@ -37,8 +37,6 @@ read -r adapterName
 
 if [ "$operatingSystem" == "ubuntu" ]; then
 	# Configure network settings
-	ip a
-	
 	networkConfig="00-installer-config.yaml"
 	sudo -i <<-EOF
 	echo -e "

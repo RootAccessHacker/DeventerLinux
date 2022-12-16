@@ -4,28 +4,35 @@
   hosts: test
   become: true
   tasks:
-  - name: Install ClamAV basics
-    yum: name=clamav state=latest
+  - name: Dnf install zabbix-agent
+    dnf:
+      name: "{{ item }}"
+      state: latest
+    loop:
+      - 'epel-release'
+      - 'clamav'
+      - 'clamd'
+      - 'clamav-update'
 
-  - name: Install ClamAV scanner
-    yum: name=clamav-scanner state=latest
+  - name: Set permissions
+    shell: "{{ item }}"
+    loop:
+      - ''setsebool -P antivirus_can_scan_system 1
+      - 'sed -i 's/#LocalSocket \/run/LocalSocket \/run/g' /etc/clamd.d/scan.conf'
 
-  - name: Install ClamAV updater
-    yum: name=clamav-update state=latest
+  - name: Copy conf
+    copy:
+      src: ../files/scan_config.conf
+      dst: /usr/lib/systemd/system/freshclam.service
   
-  - name: Add template lines to conf
-    lineinfile:
-      dest: /etc/cron.d/ansible.cron
-      line: "0 3 * * * root /usr/bin/freshclam ; /usr/bin/clamscan / --recursive=yes -i | mail -s clamav_log_`hostname` support@example.com -"
-      state: present
-      create: true
+  - name: Start and enable freshclam
+    ansible.builtin.service:
+      name: freshclam
+      state: restarted
+      enabled: true
 
-  - name: Add template lines to conf
-    lineinfile:
-      dest: /etc/cron.d/ansible.cron
-      line: "{{ item }}"
-      state: present
-      create: true
-      loop:
-        - 'LogSyslog yes'
-        - 'DatabaseMirror database.clamav.net'
+  - name: Start and enable clamav@scan
+    ansible.builtin.service:
+      name: clamd@scan
+      state: restarted
+      enabled: true

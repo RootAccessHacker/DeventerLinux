@@ -29,8 +29,8 @@ sudo mv udeventer.key.nopass udeventer.key
 sudo openssl req -new -x509 -extensions v3_ca -keyout cakey.pem -out cacert.pem -days 365
 
 # Change permissions
-sudo chmod 600 udeventer.key
-sudo chmod 600 cakey.pem
+#sudo chmod 600 udeventer.key
+#sudo chmod 600 cakey.pem
 
 # Create private directory
 sudo mkdir -p /etc/ssl/private/
@@ -70,6 +70,10 @@ sudo cp /etc/postfix/main.cf /etc/postfix/main.cf.default
 
 
 # Configure postfix main.cf
+echo "Enter networks: [(1) and (2) 127.0.0.0/8]"
+read -r networks
+sudo sed -i "286i mynetworks = $networks" /etc/postfix/main.cf
+
 sudo sed -i "s|#mydomain = domain.tld|mydomain = udeventer.nl|g" /etc/postfix/main.cf
 sudo sed -i '/myorigin = $myhostname/s/^/#/g' /etc/postfix/main.cf
 sudo sed -i '/#myorigin = $mydomain/s/^#//g' /etc/postfix/main.cf
@@ -104,6 +108,7 @@ sudo sed -i "15i ssl_key = </etc/ssl/private/udeventer.key" /etc/dovecot/conf.d/
 sudo sed -i "16d;" /etc/dovecot/conf.d/10-ssl.conf
 sudo sed -i "10i disable_plaintext_auth = yes" /etc/dovecot/conf.d/10-auth.conf
 sudo sed -i "11d;" /etc/dovecot/conf.d/10-auth.conf
+
 
 ## 10-master.conf
 sudo sed -i "107i unix_listener /var/spool/postfix/private/auth {" /etc/dovecot/conf.d/10-master.conf

@@ -8,6 +8,7 @@
 # Samba file serving: https://wiki.samba.org/index.php/Samba_File_Serving                                                     #
 # Setting up a share using POSIX ACL's: https://wiki.samba.org/index.php/Setting_up_a_Share_Using_POSIX_ACLs                  #
 # Samba variables: https://www.linuxtopia.org/online_books/network_administration_guides/using_samba_book/ch04_01_07.html     #
+# How to Join a Linux Machine to Active Directory https://www.youtube.com/watch?v=3TPgxpjgYsU                                 #
 #                                                                                                                             #
 ###############################################################################################################################
 
@@ -16,22 +17,21 @@ ipAddress=$(hostname  -I | cut -f1 -d' ')		# Get IP address of this server
 hostname=$(hostname)					# Get hostname
 domain="udeventer"					# Get domain name
 realm="udeventer.nl"					# Get realm name
-provisionPassword="Welkom01"				# Default provision password
+dns=$ipAddress						# Get DNS address
 forwarder="1.1.1.1"					# Domain DNS forward address
+provisionPassword="Welkom01"				# Default provision password
 userHomes=/var/lib/samba/sysvol/$realm/homefolders	# Domain users home folder location
 userProfiles=/var/lib/samba/sysvol/$realm/profiles	# Domain users profile folder location
-smb=/var/lib/samba/sysvol/$realm/smb			# Samba smb folder location
-nfs=/var/lib/samba/sysvol/$realm/nfs			# Samba nfs folder location
 
-# Put ip address, hostname and FQDN into hosts file
+# Put ip address, hostname and FQDN into hosts file and set hostname
 if ! grep "$ipAddress $hostname $hostname.$realm" /etc/hosts; then
 	echo "$ipAddress $hostname $hostname.$realm" | sudo tee -a /etc/hosts
+	sudo sed -i "s|$hostname|$hostname.$realm|g" /etc/hostname
 fi
 
 # Echo warning type FQDN
 echo -e "\e[1;93;41m!!! When asked in the Kerberos setup for a hostname, type in the FQDN of the server !!!\e[0m"
-#read -p "Press enter to continue"
-sleep 5
+read -p "Press enter to continue"
 
 # Install packages
 sudo apt install samba winbind libnss-winbind libpam-winbind ldb-tools krb5-config krb5-user smbclient dnsutils net-tools acl nfs-kernel-server -y
@@ -76,18 +76,22 @@ else
 fi
 
 # Map domain administrator account to root user
-if ! grep "[!]root = UDEVENTER[\]Administrator" /etc/samba/user.map; then
-	echo \!"root = UDEVENTER\Administrator" | sudo tee -a /etc/samba/user.map
-fi
+#if ! grep "[!]root = UDEVENTER[\]Administrator" /etc/samba/user.map; then
+#	echo \!"root = UDEVENTER\Administrator" | sudo tee -a /etc/samba/user.map
+#fi
 
 # Edit name service switch nsswitch.conf
 sudo sed -i "7,8d" /etc/nsswitch.conf
 sudo sed -i "7i passwd:         files systemd winbind" /etc/nsswitch.conf
 sudo sed -i "8i group:          files systemd winbind" /etc/nsswitch.conf
 
-# Edit resolv.conf for dns
+# Edit resolv.conf and netplan for dns
 sudo sed -i "s|nameserver.*|nameserver $ipAddress|g" /etc/resolv.conf
 sudo sed -i "s|search.*|search $realm|g" /etc/resolv.conf
+networkConfig="00-installer-config.yaml"
+sudo sed -i "10d" /etc/netplan/$networkConfig
+sudo sed -i "10i \        - $dns" /etc/netplan/$networkConfig
+sudo netplan apply
 
 # Disable, unmask and enable samba services
 sudo systemctl disable --now smbd nmbd winbind systemd-resolved
@@ -97,61 +101,72 @@ sleep 5
 
 # Echo warning change xidNumber
 echo -e "\e[1;93;41m!!! Change xidNumber of the domain users group from 100 to 10001 !!!\e[0m"
-#read -p "Press enter to continue"
-sleep 5
+read -p "Press enter to continue"
 
 # Change xidNumber for "domain users"
 wbinfoOutput=$(wbinfo -n "domain users" | cut -f1 -d " ")
 sudo ldbedit -U UDEVENTER\\administrator%Welkom01 -H /var/lib/samba/private/idmap.ldb objectsid="$wbinfoOutput" -e nano
 
+# Create shared folders
+if [ ! -d "$userHomes" ]; then
+        sudo mkdir -p "$userHomes"
+else
+        echo "User homes folder already exists"
+fi
+
+if [ ! -d "$userProfiles" ]; then
+        sudo mkdir -p "$userProfiles"
+else
+        echo "User profiles folder already exists"
+fi
+
+# Put permissions on shared folders
+sudo chgrp -R "${domain^^}\domain users" $userHomes
+sudo chmod 2750 $userHomes
+
+sudo chgrp -R "${domain^^}\domain users" $userProfiles
+sudo chmod 2750 $userProfiles
+
 # Edit samba smb.conf
+echo "" | sudo tee -a /etc/samba/smb.conf
 sudo sed -i "s|dns forwarder.*|dns forwarder = $forwarder|g" /etc/samba/smb.conf
-sudo sed -i "s|read only = No|read only = no|g" /etc/samba/smb.conf
-sudo sed -i "9i \	username map = /etc/samba/user.map" /etc/samba/smb.conf
+sudo sed -i 's|read only = No|read only = no|g' /etc/samba/smb.conf
+sudo sed -i '9i \	username map = /etc/samba/user.map' /etc/samba/smb.conf
 sudo sed -i "10i \	idmap config $domain:unix_primary_group = yes" /etc/samba/smb.conf
-sudo sed -i "15i \	browseable = no" /etc/samba/smb.conf
-sudo sed -i "20i \	browseable = no" /etc/samba/smb.conf
+sudo sed -i '11i \	domain logons = yes' /etc/samba/smb.conf
+sudo sed -i '12i \	logon path = \\\\%N\\profiles\\%U' /etc/samba/smb.conf
+sudo sed -i '13i \	logon drive = H' /etc/samba/smb.conf
+sudo sed -i '14i \	logon home = \\\\%N\\homefolder\\%U' /etc/samba/smb.conf
+sudo sed -i '19i \	browseable = no' /etc/samba/smb.conf
+sudo sed -i '24i \	browseable = no' /etc/samba/smb.conf
 
 # Add samba shared folders to smb.conf
-if ! grep "\[homefolders\]" /etc/samba/smb.conf; then
+if ! grep "\[homefolder\]" /etc/samba/smb.conf; then
 	sudo -i <<-EOF
-	echo -e "
-	[homefolders]
+	echo -e "[homefolder]
         path = $userHomes/%U
-        read only = no" | sudo tee -a "/etc/samba/smb.conf"
+        read only = no
+        valid users = %S
+        " | sudo tee -a "/etc/samba/smb.conf"
 	EOF
 fi
 
 if ! grep "\[profiles\]" /etc/samba/smb.conf; then
 	sudo -i <<-EOF
-	echo -e "
-	[profiles]
+	echo -e "[profiles]
         path = $userProfiles/%U
         read only = no
         browsable = no
         csc policy = disable
-        vfs objects = acl_xattr" | sudo tee -a "/etc/samba/smb.conf"
+        vfs objects = acl_xattr
+        " | sudo tee -a "/etc/samba/smb.conf"
 	EOF
 fi
 
-#if ! grep "\[smb\]" /etc/samba/smb.conf; then
-#	sudo -i <<-EOF
-#	echo -e "
-#	[smb]
-#       path = $smb/smb
-#       read only = no" | sudo tee -a "/etc/samba/smb.conf"
-#	EOF
-#fi
-
-#if ! grep "\[nfs\]" /etc/samba/smb.conf; then
-#	sudo -i <<-EOF
-#	echo -e "
-#	[nfs]
-#       path = $nfs/nfs/
-#       read only = no
-#       hosts allow = 10.0.0.0/24 10.1.10.180" | sudo tee -a "/etc/samba/smb.conf"
-#	EOF
-#fi
+# Reload samba
+sudo smbcontrol all reload-config
+sudo systemctl restart samba-ad-dc
+sleep 5
 
 # Export NFS shares
 if ! grep "$userHomes" /etc/exports; then
@@ -170,51 +185,6 @@ fi
 
 sudo exportfs -a
 sudo systemctl restart nfs-kernel-server
-
-# Create samba shared folders
-if [ ! -d "$userHomes" ]; then
-        sudo mkdir -p "$userHomes"
-else
-        echo "User homes folder already exists"
-fi
-
-if [ ! -d "$userProfiles" ]; then
-        sudo mkdir -p "$userProfiles"
-else
-        echo "User profiles folder already exists"
-fi
-
-#if [ ! -d "$smb" ]; then
-#       sudo mkdir -p "$smb"
-#else
-#       echo "Samba smb folder already exists"
-#fi
-
-#if [ ! -d "$nfs" ]; then
-#       sudo mkdir -p "$nfs"
-#else
-#       echo "Samba nfs folder already exists"
-#fi
-
-# Put permissions on samba shared folders
-sudo chgrp -R "${domain^^}\domain users" $userHomes
-sudo chmod 2750 $userHomes
-
-sudo chgrp -R "${domain^^}\domain users" $userProfiles
-sudo chmod 2750 $userProfiles
-
-#sudo chgrp -R "${domain^^}\domain users" $smb
-#sudo chmod 2770 $smb
-
-#sudo chgrp -R "${domain^^}\domain users" $nfs
-#sudo chmod 2770 $nfs
-
-sudo ls -l /var/lib/samba/sysvol/udeventer.nl/
-
-# Reload samba
-sudo smbcontrol all reload-config
-sudo systemctl restart samba-ad-dc
-sleep 5
 
 # Check if samba is listening for connections
 sudo netstat -antp | grep -E "smbd|samba"

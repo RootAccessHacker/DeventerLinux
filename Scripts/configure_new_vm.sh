@@ -14,7 +14,7 @@ sudo sed -i "s|$currentHostname|$newHostname|g" /etc/hostname
 sudo rm -f /etc/machine-id
 sudo dbus-uuidgen --ensure=/etc/machine-id
 
-# Check for Ubuntu 22.04.5 or CentOS 8
+# Check for Ubuntu 20.04.5 or CentOS 8
 operatingSystem=$(sudo cat /etc/os-release | grep -E "(^|[^VERSION_])ID=" | cut -b 4-)
 
 # Ask for network settings
@@ -39,8 +39,7 @@ if [ "$operatingSystem" == "ubuntu" ]; then
 	# Configure network settings
 	networkConfig="00-installer-config.yaml"
 	sudo -i <<-EOF
-	echo -e "
-	# This is the network config written by 'subiquity'
+	echo -e "# This is the network config written by 'subiquity'
 	network:
 	  ethernets:
 	    $adapterName:

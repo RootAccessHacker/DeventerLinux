@@ -29,8 +29,8 @@ sudo mv udeventer.key.nopass udeventer.key
 sudo openssl req -new -x509 -extensions v3_ca -keyout cakey.pem -out cacert.pem -days 365
 
 # Change permissions
-sudo chmod 600 udeventer.key
-sudo chmod 600 cakey.pem
+#sudo chmod 600 udeventer.key
+#sudo chmod 600 cakey.pem
 
 # Create private directory
 sudo mkdir -p /etc/ssl/private/
@@ -69,8 +69,18 @@ sudo dnf install dovecot -y
 sudo cp /etc/postfix/main.cf /etc/postfix/main.cf.default
 
 
+# Configure postfix main.cf
+echo "Enter networks: [(1) and (2) 127.0.0.0/8]"
+read -r networks
+sudo sed -i "286i mynetworks = $networks" /etc/postfix/main.cf
+
 sudo sed -i "s|#mydomain = domain.tld|mydomain = udeventer.nl|g" /etc/postfix/main.cf
-sudo sed -i "s|#myorigin = $mydomain|myorigin = $mydomain|g" /etc/postfix/main.cf
+sudo sed -i '/myorigin = $myhostname/s/^/#/g' /etc/postfix/main.cf
+sudo sed -i '/#myorigin = $mydomain/s/^#//g' /etc/postfix/main.cf
+
+sudo sed -i '183d;' /etc/postfix/main.cf
+sudo sed -i "182i mydestination = \$myhostname, localhost.\$mydomain, localhost, \$mydomain" /etc/postfix/main.cf
+
 sudo sed -i "s|inet_interfaces = localhost|inet_interfaces = all|g" /etc/postfix/main.cf
 sudo sed -i "s|#home_mailbox = Maildir/|home_mailbox = Maildir/|g" /etc/postfix/main.cf 
 
@@ -91,9 +101,6 @@ sudo postconf -e "smtpd_tls_CAfile = /etc/ssl/certs/cacert.pem"
 sudo postconf -e "smtpd_tls_session_cache_timeout = 3600"
 
 
-sudo service postfix restart
-sudo postfix reload
-
 ## 10-ssl.conf
 sudo sed -i "14i ssl_cert = </etc/ssl/certs/udeventer.crt" /etc/dovecot/conf.d/10-ssl.conf
 sudo sed -i "15d;" /etc/dovecot/conf.d/10-ssl.conf
@@ -101,6 +108,7 @@ sudo sed -i "15i ssl_key = </etc/ssl/private/udeventer.key" /etc/dovecot/conf.d/
 sudo sed -i "16d;" /etc/dovecot/conf.d/10-ssl.conf
 sudo sed -i "10i disable_plaintext_auth = yes" /etc/dovecot/conf.d/10-auth.conf
 sudo sed -i "11d;" /etc/dovecot/conf.d/10-auth.conf
+
 
 ## 10-master.conf
 sudo sed -i "107i unix_listener /var/spool/postfix/private/auth {" /etc/dovecot/conf.d/10-master.conf
@@ -118,17 +126,14 @@ sudo sed -i "112d;" /etc/dovecot/conf.d/10-master.conf
 sudo sed -i "s|#   mail_location = maildir:~/Maildir|   mail_location = maildir:~/Maildir|g" /etc/dovecot/conf.d/10-mail.conf
 sudo sed -i "s|#mail_privileged_group =|mail_privileged_group = mail|g" /etc/dovecot/conf.d/10-mail.conf
 
+# Reload services
+sudo service postfix restart
+sudo postfix reload
 
+sudo service dovecot restart
 
-
-
-
-
-
-
-
-
-
-
-
-
+#TODO
+# change network
+# change mydestination
+# change mode cacert.pem to 644
+# change cert permissions

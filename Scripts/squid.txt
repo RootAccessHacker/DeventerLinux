@@ -1,0 +1,12 @@
+# DHCP CENTRAAL!
+https://sourceforge.net/projects/sarg/files/sarg/sarg-2.4.0/sarg-2.4.0.tar.gz/download
+tar -zxvf sarg-2.4.0.tar.gz
+cd sarg-2.4.0.tar
+./configure
+make
+make install
+
+yum install https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm
+wget https://github.com/rpmsphere/noarch/raw/master/r/rpmsphere-release-36-1.noarch.rpm
+rpm -Uvh rpmsphere-release*rpm
+dnf install sarg

@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
 # Install squid, sarg and apache2
-sudo apt install squid sarg  apache2 -y
+# Install apache -> httpd
+sudo dnf install squid apache2 -y
+
+# sarg installation CentOS
+# https://linuxtechlab.com/sarg-installation-configuration/
+# https://techglimpse.com/no-acceptable-c-compiler-found-fix/ 
 
 # Remove default index.html
 sudo rm /var/www/html/index.html

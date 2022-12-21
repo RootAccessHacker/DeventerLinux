@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 #check for Ubuntu 20.04.5, CentOS or AlmaLinux
-operatingSystem=$(sudo cat /etc/os-release | grep -E "(^|[^VERSION_])ID=" | cut -b d-)
+operatingSystem=$(sudo cat /etc/os-release | grep -E "(^|[^VERSION_])ID=" | cut -b 4-)
 
 if [ "$operatingSystem" == "ubuntu" ]; then
-        # Install squid, sarg and apache2
-        sudo apt install squid sarg  apache2 -y
+        # Install squid, sarg, apache2 and net-tools
+        sudo apt install squid sarg  apache2 net-tools -y
 else 
         # Install squid and httpd (Apache)
         sudo dnf install squid httpd -y

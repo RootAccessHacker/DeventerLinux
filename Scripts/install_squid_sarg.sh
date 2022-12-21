@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
 
-# Install squid, sarg and apache2
-# Install apache -> httpd
-sudo dnf install squid apache2 -y
+#check for Ubuntu 20.04.5, CentOS or AlmaLinux
+operatingSystem=$(sudo cat /etc/os-release | grep -E "(^|[^VERSION_])ID=" | cut -b d-)
+
+if [ "$operatingSystem" == "ubuntu" ]; then
+        # Install squid, sarg and apache2
+        sudo apt install squid sarg  apache2 -y
+else 
+        # Install squid and httpd (Apache)
+        sudo dnf install squid httpd -y
+fi 
 
 # sarg installation CentOS
 # https://linuxtechlab.com/sarg-installation-configuration/

@@ -10,13 +10,13 @@ else
         # Install squid and httpd (Apache)
         sudo dnf install squid httpd -y
         # sarg installation CentOS
-        sudo dnf install -y gcc gd gd-devel make perl-GD wget httpd
-        sudo wget http://sourceforge.net/projects/sarg/files/sarg/sarg-2.4.0/sarg-2.4.0.tar.gz
-        tar -xvzf sarg-2.4.0.tar.gz
-        cd sarg-2.4.0
-        ./configure
-        make
-        make install
+        # sudo dnf install -y gcc gd gd-devel make perl-GD wget httpd
+        # sudo wget http://sourceforge.net/projects/sarg/files/sarg/sarg-2.4.0/sarg-2.4.0.tar.gz
+        # tar -xvzf sarg-2.4.0.tar.gz
+        # cd sarg-2.4.0
+        # ./configure
+        # make
+        # make install
         # https://linuxtechlab.com/sarg-installation-configuration/
         # https://techglimpse.com/no-acceptable-c-compiler-found-fix/ 
 fi 

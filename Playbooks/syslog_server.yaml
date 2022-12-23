@@ -1,0 +1,57 @@
+---
+#ansible-playbook syslog_server.yaml -i ../inventory --ask-pass --ask-become-pass
+- name: Configure syslog server
+  hosts: logserver
+  become: true
+  tasks:
+  - name: Install rsyslog
+    dnf:
+      name: rsyslog
+      state: present
+
+  - name: Start service rsyslog, if not started
+    ansible.builtin.service:
+      name: rsyslog
+      state: started
+
+  - name: Enable service rsyslog to start on boot
+    ansible.builtin.service:
+      name: rsyslog
+      enabled: yes
+  
+  - name: Ufw enabled
+    community.general.ufw:
+      state: "enabled"
+      policy: "deny"
+      logging: "on"
+
+  - name: Ufw rules on port 514
+    community.general.ufw:
+      rule: "allow"
+      port: "514"
+      proto: "tcp"
+
+  - name: Add template lines to conf
+    lineinfile:
+      dest: /etc/rsyslog.conf
+      line: "{{ item }}"
+      state: present
+      create: true
+    loop:
+      - '$template FILENAME,"/varlog/%HOSTNAME%/syslog.log"'
+      - '*.* ?FILENAME'
+
+  - name: "Ansible Lineinfile Multiple Lines"
+    lineinfile:
+      path: /etc/httpd/conf/httpd.conf
+      regexp: '{{item.From}}'
+      line: '{{item.To}}'
+      state: present  
+    with_items:
+      - { From: '#module\(load="imtcp"\)', To: 'module\(load="imtcp"\)'}
+      - { From: '#input\(type="tcp" port="514"\)', To: 'input\(type="tcp" port="514"\)'}
+
+  - name: Restart syslog
+    ansible.builtin.service:
+      name: rsyslog
+      state: restarted

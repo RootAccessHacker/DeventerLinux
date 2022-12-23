@@ -1,7 +1,25 @@
 #!/usr/bin/env bash
 
-# Install squid, sarg and apache2
-sudo apt install squid sarg  apache2 -y
+#check for Ubuntu 20.04.5, CentOS or AlmaLinux
+operatingSystem=$(sudo cat /etc/os-release | grep -E "(^|[^VERSION_])ID=" | cut -b 4-)
+
+if [ "$operatingSystem" == "ubuntu" ]; then
+        # Install squid, sarg, apache2 and net-tools
+        sudo apt install squid sarg  apache2 net-tools -y
+else 
+        # Install squid and httpd (Apache)
+        sudo dnf install squid httpd -y
+        # sarg installation CentOS
+        # sudo dnf install -y gcc gd gd-devel make perl-GD wget httpd
+        # sudo wget http://sourceforge.net/projects/sarg/files/sarg/sarg-2.4.0/sarg-2.4.0.tar.gz
+        # tar -xvzf sarg-2.4.0.tar.gz
+        # cd sarg-2.4.0
+        # ./configure
+        # make
+        # make install
+        # https://linuxtechlab.com/sarg-installation-configuration/
+        # https://techglimpse.com/no-acceptable-c-compiler-found-fix/ 
+fi 
 
 # Remove default index.html
 sudo rm /var/www/html/index.html

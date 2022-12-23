@@ -1,0 +1,174 @@
+Current configuration : 2634 bytes
+!
+! Last configuration change at 11:08:28 UTC+1 Wed Dec 14 2022 by groep2login
+! NVRAM config last updated at 11:16:40 UTC+1 Wed Dec 14 2022 by groep2login
+!
+version 15.2
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname SW-Nunspeet
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret 5 $1$TmtS$x6e6d95I43hbhXmKPTMwj.
+enable password 7 15151903013A792C3F
+!
+username groep2login password 7 050C1400245C1C1A0A0D
+no aaa new-model
+clock timezone UTC+1 1 0
+system mtu routing 1500
+vtp mode transparent
+!
+!
+!
+!
+!
+!
+!
+ip domain-name ssh.harderwijk.local
+!
+!
+!
+!
+spanning-tree mode mst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 1720
+ name Beheer-Nunspeet
+!
+vlan 1721
+ name Studenten
+!
+vlan 1722
+ name Personeel
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/1
+ switchport trunk allowed vlan 1720-1722
+ switchport mode trunk
+!
+interface FastEthernet0/2
+ switchport access vlan 1720
+ switchport mode access
+!
+interface FastEthernet0/3
+ shutdown
+!
+interface FastEthernet0/4
+ shutdown
+!
+interface FastEthernet0/5
+ shutdown
+!
+interface FastEthernet0/6
+ shutdown
+!
+interface FastEthernet0/7
+ shutdown
+!
+interface FastEthernet0/8
+ shutdown
+!
+interface FastEthernet0/9
+ shutdown
+!
+interface FastEthernet0/10
+ shutdown
+!
+interface FastEthernet0/11
+ shutdown
+!
+interface FastEthernet0/12
+ shutdown
+!
+interface FastEthernet0/13
+ shutdown
+!
+interface FastEthernet0/14
+ shutdown
+!
+interface FastEthernet0/15
+ shutdown
+!
+interface FastEthernet0/16
+ shutdown
+!
+interface FastEthernet0/17
+ shutdown
+!
+interface FastEthernet0/18
+ shutdown
+!
+interface FastEthernet0/19
+ shutdown
+!
+interface FastEthernet0/20
+ shutdown
+!
+interface FastEthernet0/21
+ shutdown
+!
+interface FastEthernet0/22
+ shutdown
+!
+interface FastEthernet0/23
+ shutdown
+!
+interface FastEthernet0/24
+ shutdown
+!
+interface GigabitEthernet0/1
+ shutdown
+!
+interface GigabitEthernet0/2
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan1720
+ ip address 10.20.1.2 255.255.255.192
+ ip helper-address 10.0.0.2
+ ip helper-address 10.0.0.3
+!
+interface Vlan1721
+ ip address 10.21.1.2 255.255.255.0
+ ip helper-address 10.0.0.2
+ ip helper-address 10.0.0.3
+!
+interface Vlan1722
+ ip address 10.22.1.2 255.255.255.0
+ ip helper-address 10.0.0.2
+ ip helper-address 10.0.0.3
+!
+ip http server
+ip http secure-server
+ip ssh version 2
+!
+no vstack
+!
+line con 0
+ password 7 070833434B194B15160118
+ logging synchronous
+ login local
+line vty 0 4
+ password 7 045C19090A311E581D00
+ login local
+ transport input ssh
+line vty 5 15
+ password 7 15151903013A79323C2A
+ login
+!
+ntp server 10.0.0.2
+end

@@ -1,0 +1,170 @@
+Current configuration : 2813 bytes
+!
+! Last configuration change at 09:06:45 UTC Wed Dec 14 2022 by groep2login
+! NVRAM config last updated at 09:07:19 UTC Wed Dec 14 2022 by groep2login
+!
+version 15.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R-Nunspeet
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$gURY$aBKQVOgrde9HLb8c8c4la1
+enable password 7 110E0B0A1202590413
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip domain name ssh.harderwijk.local
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+cts logging verbose
+!
+!
+license udi pid CISCO1941/K9 sn FCZ2048406G
+!
+!
+username groep2login password 7 06011D2E495E5B0A161F
+!
+redundancy
+!
+!
+!
+!
+!
+ip ssh version 2
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ description R-Nunspeet -> L3-Kruithuis
+ ip address 10.0.5.2 255.255.255.252
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ description R-nunspeet -> SW-Nunspeet
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1.1720
+ description Default Gateway for vlan 1720
+ encapsulation dot1Q 1720
+ ip address 10.20.1.1 255.255.255.192
+ ip helper-address 10.0.0.2
+ ip helper-address 10.0.0.3
+!
+interface GigabitEthernet0/1.1721
+ description Default Gateway for Vlan 1721
+ encapsulation dot1Q 1721
+ ip address 10.21.1.1 255.255.255.0
+ ip helper-address 10.0.0.2
+ ip helper-address 10.0.0.3
+!
+interface GigabitEthernet0/1.1722
+ description Default Gateway for Vlan 1722
+ encapsulation dot1Q 1722
+ ip address 10.22.1.1 255.255.255.0
+ ip helper-address 10.0.0.2
+ ip helper-address 10.0.0.3
+!
+interface Serial0/0/0
+ description Serial R-Nunspeet -> R-Putten
+ ip address 10.0.7.2 255.255.255.252
+ clock rate 2000000
+!
+interface Serial0/0/1
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+interface Serial0/1/0
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+interface Serial0/1/1
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+router ospf 1
+ router-id 3.3.3.3
+ network 10.0.5.0 0.0.0.3 area 0
+ network 10.0.7.0 0.0.0.3 area 0
+ network 10.20.1.0 0.0.0.63 area 0
+ network 10.21.1.0 0.0.0.255 area 0
+ network 10.22.1.0 0.0.0.255 area 0
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+!
+ip default-network 10.0.0.0
+ip route 0.0.0.0 0.0.0.0 10.45.1.1
+!
+!
+!
+!
+control-plane
+!
+!
+!
+line con 0
+ password 7 070833434B194B15160118
+ logging synchronous
+ login local
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ password 7 070833434B194B13030B
+ login local
+ transport input ssh
+line vty 5 15
+ password 7 070833434B194B13030B
+ login
+ transport input none
+!
+scheduler allocate 20000 1000
+ntp server 10.0.0.2
+!
+end

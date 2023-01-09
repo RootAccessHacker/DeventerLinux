@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Get current directory
+directory=$PWD
+
 #check for Ubuntu 20.04.5, CentOS or AlmaLinux
 operatingSystem=$(sudo cat /etc/os-release | grep -E "(^|[^VERSION_])ID=" | cut -b 4-)
 
@@ -12,8 +15,13 @@ else
         # sarg installation CentOS
         sudo dnf install -y gcc gd gd-devel make perl-GD httpd
         sudo wget -O sarg.tar.gz https://sourceforge.net/projects/sarg/files/sarg/sarg-2.4.0/sarg-2.4.0.tar.gz/download
-        tar -xvzf sarg.tar.gz
+        mkdir $directory/sarg
+        tar -xvzf --strip-components 1 sarg.tar.gz --directory $directory/sarg
         cd sarg
+        sudo sed -i "s|\	char daynum[10]:|\	char daynum[200]:|g" $directory/sarg/index.c
+        sudo sed -i "s|\	char monthnum[10]:|\	char monthnum[200]:|g" $directory/sarg/index.c
+        sudo sed -i "s|\	char yearnum[10]:|\	char yearnum[200]:|g" $directory/sarg/index.c
+        sudo sed -i "s|\	char cstr[9]:|\	char cstr[10]:|g" $directory/sarg/userinfo.c
         ./configure
         make
         make install

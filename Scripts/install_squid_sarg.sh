@@ -9,25 +9,27 @@ operatingSystem=$(sudo cat /etc/os-release | grep -E "(^|[^VERSION_])ID=" | cut 
 if [ "$operatingSystem" == "ubuntu" ]; then
         # Install squid, sarg, apache2 and net-tools
         sudo apt install squid sarg apache2 net-tools -y
-else 
-        # Install squid and httpd (Apache)
-        sudo dnf install squid httpd net-tools -y
-        # sarg installation CentOS
-        sudo dnf install -y gcc gd gd-devel make perl-GD httpd
-        sudo wget -O sarg.tar.gz https://sourceforge.net/projects/sarg/files/sarg/sarg-2.4.0/sarg-2.4.0.tar.gz/download
-        mkdir $directory/sarg
-        tar -xvzf sarg.tar.gz --strip-components 1 --directory $directory/sarg
-        cd sarg
-        sudo sed -i "s|\	char daynum[10]:|\	char daynum[200]:|g" $directory/sarg/index.c
-        sudo sed -i "s|\	char monthnum[10]:|\	char monthnum[200]:|g" $directory/sarg/index.c
-        sudo sed -i "s|\	char yearnum[10]:|\	char yearnum[200]:|g" $directory/sarg/index.c
-        sudo sed -i "s|\	char cstr[9]:|\	char cstr[10]:|g" $directory/sarg/userinfo.c
-        ./configure
-        make
-        make install
-        # https://linuxtechlab.com/sarg-installation-configuration/
-        # https://techglimpse.com/no-acceptable-c-compiler-found-fix/ 
-fi 
+else
+	echo "This is not an Ubuntu server, exiting"
+#        # Install squid and httpd (Apache)
+#        sudo dnf install squid httpd net-tools -y
+#        # sarg installation CentOS
+#        sudo dnf install -y gcc gd gd-devel make perl-GD httpd
+#        sudo wget -O sarg.tar.gz https://sourceforge.net/projects/sarg/files/sarg/sarg-2.4.0/sarg-2.4.0.tar.gz/download
+#        mkdir $directory/sarg
+#        tar -xvzf sarg.tar.gz --strip-components 1 --directory $directory/sarg
+#        cd sarg
+#        sudo sed -i "s|\	char daynum[10]:|\	char daynum[200]:|g" $directory/sarg/index.c
+#        sudo sed -i "s|\	char monthnum[10]:|\	char monthnum[200]:|g" $directory/sarg/index.c
+#        sudo sed -i "s|\	char yearnum[10]:|\	char yearnum[200]:|g" $directory/sarg/index.c
+#        sudo sed -i "s|\			snprintf(yearnum,sizeof(yearnum),"%04d-%04d",year>>10,year & 0x3FF);|\			snprintf(yearnum,sizeof(yearnum),"%04d-%04d",year>>30,year & 0x3FF);|g" $directory/sarg/index.c
+#        sudo sed -i "s|\	char cstr[9]:|\	char cstr[10]:|g" $directory/sarg/userinfo.c
+#        ./configure
+#        make
+#        make install
+#        # https://linuxtechlab.com/sarg-installation-configuration/
+#        # https://techglimpse.com/no-acceptable-c-compiler-found-fix/ 
+fi
 
 # Remove default index.html
 sudo rm /var/www/html/index.html
@@ -94,5 +96,6 @@ sudo crontab -l | grep -v -F "$cronJob" ; echo "$cronJob" | sudo crontab -
 
 # Enable squid service
 sudo systemctl enable --now squid
+sudo systemctl enable --now apache2
 sleep 5
-sudo netstat -antp | grep -E "squid|httpd"
+sudo netstat -antp | grep -E "squid|apache2"

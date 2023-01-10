@@ -11,12 +11,12 @@ if [ "$operatingSystem" == "ubuntu" ]; then
         sudo apt install squid sarg apache2 net-tools -y
 else 
         # Install squid and httpd (Apache)
-        sudo dnf install squid httpd -y
+        sudo dnf install squid httpd net-tools -y
         # sarg installation CentOS
         sudo dnf install -y gcc gd gd-devel make perl-GD httpd
         sudo wget -O sarg.tar.gz https://sourceforge.net/projects/sarg/files/sarg/sarg-2.4.0/sarg-2.4.0.tar.gz/download
         mkdir $directory/sarg
-        tar -xvzf --strip-components 1 sarg.tar.gz --directory $directory/sarg
+        tar -xvzf sarg.tar.gz --strip-components 1 --directory $directory/sarg
         cd sarg
         sudo sed -i "s|\	char daynum[10]:|\	char daynum[200]:|g" $directory/sarg/index.c
         sudo sed -i "s|\	char monthnum[10]:|\	char monthnum[200]:|g" $directory/sarg/index.c
@@ -95,4 +95,4 @@ sudo crontab -l | grep -v -F "$cronJob" ; echo "$cronJob" | sudo crontab -
 # Enable squid service
 sudo systemctl enable --now squid
 sleep 5
-sudo netstat -antp | grep -E "squid"
+sudo netstat -antp | grep -E "squid|httpd"

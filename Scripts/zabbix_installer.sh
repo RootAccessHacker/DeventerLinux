@@ -30,4 +30,4 @@ sudo dnf install zabbix-server-mysql zabbix-web-mysql zabbix-apache-conf zabbix-
 #sudo systemctl restart zabbix-server.service zabbix-agent.service php-fpm.service 
 #sudo systemctl enable zabbix-server zabbix-agent httpd php-fpm --now
 
-https://github.com/RootAccessHacker/DeventerLinux.git
+# https://github.com/RootAccessHacker/DeventerLinux.git

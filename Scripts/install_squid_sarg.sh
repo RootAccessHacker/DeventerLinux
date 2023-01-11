@@ -104,7 +104,7 @@ EOF
 
 # Create sarg -x cronjob
 cronCommand="sarg -x"
-cronJob="*/1 * * * * $cronCommand"
+cronJob="@hourly $cronCommand"
 sudo crontab -l | grep -v -F "$cronJob" ; echo "$cronJob" | sudo crontab -
 
 # Enable squid service

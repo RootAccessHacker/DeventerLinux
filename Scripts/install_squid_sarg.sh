@@ -6,30 +6,8 @@ directory=$PWD
 #check for Ubuntu 20.04.5, CentOS or AlmaLinux
 operatingSystem=$(sudo cat /etc/os-release | grep -E "(^|[^VERSION_])ID=" | cut -b 4-)
 
-if [ "$operatingSystem" == "ubuntu" ]; then
-        # Install squid, sarg, apache2 and net-tools
-        sudo apt install squid sarg apache2 net-tools -y
-else
-	echo "This is not an Ubuntu server, exiting"
-#        # Install squid and httpd (Apache)
-#        sudo dnf install squid httpd net-tools -y
-#        # sarg installation CentOS
-#        sudo dnf install -y gcc gd gd-devel make perl-GD httpd
-#        sudo wget -O sarg.tar.gz https://sourceforge.net/projects/sarg/files/sarg/sarg-2.4.0/sarg-2.4.0.tar.gz/download
-#        mkdir $directory/sarg
-#        tar -xvzf sarg.tar.gz --strip-components 1 --directory $directory/sarg
-#        cd sarg
-#        sudo sed -i "s|\	char daynum[10]:|\	char daynum[200]:|g" $directory/sarg/index.c
-#        sudo sed -i "s|\	char monthnum[10]:|\	char monthnum[200]:|g" $directory/sarg/index.c
-#        sudo sed -i "s|\	char yearnum[10]:|\	char yearnum[200]:|g" $directory/sarg/index.c
-#        sudo sed -i "s|\			snprintf(yearnum,sizeof(yearnum),"%04d-%04d",year>>10,year & 0x3FF);|\			snprintf(yearnum,sizeof(yearnum),"%04d-%04d",year>>30,year & 0x3FF);|g" $directory/sarg/index.c
-#        sudo sed -i "s|\	char cstr[9]:|\	char cstr[10]:|g" $directory/sarg/userinfo.c
-#        ./configure
-#        make
-#        make install
-#        # https://linuxtechlab.com/sarg-installation-configuration/
-#        # https://techglimpse.com/no-acceptable-c-compiler-found-fix/ 
-fi
+# Install squid, sarg, apache2 and net-tools
+sudo apt install squid sarg apache2 net-tools -y
 
 # Remove default index.html
 sudo rm /var/www/html/index.html
@@ -70,11 +48,46 @@ fi
 
 # Create squid config file
 sudo -i <<-EOF
-echo -e "acl localhost src 127.0.0.1
-acl vlan1101 src 10.0.0.0/24
+echo -e "# ACL Localhost
+acl localhost src 127.0.0.1
+
+# ACL VLANs Deventer
+acl vlan1101 src 10.100.0.0/24
+acl vlan1130 src 10.130.1.0/26
+acl vlan1131 src 10.131.1.0/24
+acl vlan1132 src 10.132.1.0/24
+acl vlan1145 src 10.145.1.0/24
+acl vlan1150 src 10.150.1.0/24
+
+# ACL VLANs Harderwijk
+acl vlan1701 src 10.0.0.0/24
+acl vlan1730 src 10.30.1.0/26
+acl vlan1731 src 10.31.1.0/24
+acl vlan1732 src 10.32.1.0/24
+acl vlan1745 src 10.45.1.0/24
+
+# http_access allow rules localhost
 http_access allow localhost
+
+# http_access allow rules Harderwijk
 http_access allow vlan1101
+http_access allow vlan1130
+http_access allow vlan1131
+http_access allow vlan1132
+http_access allow vlan1145
+http_access allow vlan1150
+
+# http_access allow rules Harderwijk
+http_access allow vlan1701
+http_access allow vlan1730
+http_access allow vlan1731
+http_access allow vlan1732
+http_access allow vlan1745
+
+# http_port
 http_port 0.0.0.0:3129
+
+# http_access deny rules
 http_access deny all" | sudo tee "/etc/squid/squid.conf"
 EOF
 

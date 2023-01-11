@@ -50,7 +50,7 @@ if [ "$operatingSystem" == "ubuntu" ]; then
 	        addresses:
 	        - $dns1
 	        search:
-	        - harderwijk.local
+	        - ijsselstreek.local
 	  version: 2
 	" | sudo tee "/etc/netplan/$networkConfig"
 	EOF

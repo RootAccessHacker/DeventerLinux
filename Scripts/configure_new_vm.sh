@@ -27,8 +27,11 @@ read -r prefix
 echo -n "Gateway: "
 read -r gateway
 
-echo -n "DNS1: "
+echo -n "DNS: "
 read -r dns1
+
+echo -n "domain name: "
+read -r search
 
 ip a
 
@@ -50,7 +53,7 @@ if [ "$operatingSystem" == "ubuntu" ]; then
 	        addresses:
 	        - $dns1
 	        search:
-	        - udeventer.nl
+	        - $search
 	  version: 2
 	" | sudo tee "/etc/netplan/$networkConfig"
 	EOF

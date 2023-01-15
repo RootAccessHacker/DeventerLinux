@@ -3,14 +3,14 @@
 
 ## Ansible Environment Installer
 
-sudo dnf install python3.9 -y
+#sudo dnf install python3.9 -y
 sudo dnf install sshpass -y
-sudo dnf install git -y
+#sudo dnf install git -y
 
-python3.9 -m pip install --user ansible
-python3.9 -m pip install --upgrade --user ansible
+python3 -m pip install --user ansible
+python3 -m pip install --upgrade --user ansible
 
-python3.9 -m pip install --user argcomplete
+python3 -m pip install --user argcomplete
 
 activate-global-python-argcomplete --user
 

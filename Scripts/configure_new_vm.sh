@@ -5,8 +5,8 @@ gateway="10.0.0.1"                                               # gateway
 dns1="10.0.0.2"                                                  # DNS address 1
 dns2="10.0.0.3"                                                  # DNS address 2
 currentHostname=$(hostname)                                      # Get current hostname
-domain="ad.harderwijk"					                         # Get domain name
-realm="ad.harderwijk.local"					                     # Get realm name
+domain="ad.harderwijk"                                           # Get domain name
+realm="ad.harderwijk.local"                                      # Get realm name
 
 # Asking for host and network information
 echo "What should the hostname of this machine be?"              # Ask new hostname

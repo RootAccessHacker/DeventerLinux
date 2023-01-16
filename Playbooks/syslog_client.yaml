@@ -1,0 +1,30 @@
+---
+#ansible-playbook syslog_client.yaml -i ../inventory --ask-pass --ask-become-pass
+- name: Configure syslog server
+  hosts: logclient
+  become: true
+  tasks:
+  - name: Install rsyslog
+    dnf:
+      name: rsyslog
+      state: present
+
+  - name: Start service rsyslog
+    ansible.builtin.service:
+      name: rsyslog
+      state: started
+
+  - name: Enable service rsyslog to start on boot
+    ansible.builtin.service:
+      name: rsyslog
+      enabled: yes
+  
+  - name: Add send line to logserver
+    lineinfile:
+    dest: logs/testfile.log
+    line: "*.* @@{{ ansible_host }}:514"
+
+  - name: Restart syslog
+    ansible.builtin.service:
+      name: rsyslog
+      state: restarted

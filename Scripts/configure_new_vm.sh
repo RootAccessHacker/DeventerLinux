@@ -23,12 +23,34 @@ ip a
 echo -n "Network adapter name: "                                 # Network adapter name
 read -r adapterName
 
+<<<<<<< HEAD
 # Put ip address, hostname and FQDN into hosts file and set hostname
 if ! grep "$ipaddr $newHostname $newHostname.$realm" /etc/hosts; then
     echo "$ipaddr $newHostname $newHostname.$realm" | sudo tee -a /etc/hosts
     sudo sed -i "s|$currentHostname|$newHostname.$realm|g" /etc/hostname
 fi
 sudo hostnamectl set-hostname $newHostname
+=======
+if [ "$operatingSystem" == "ubuntu" ]; then
+	# Configure network settings
+	networkConfig="00-installer-config.yaml"
+	sudo -i <<-EOF
+	echo -e "# This is the network config written by 'subiquity'
+	network:
+	  ethernets:
+	    $adapterName:
+	      addresses:
+	      - $ipaddr/$prefix
+	      gateway4: $gateway
+	      nameservers:
+	        addresses:
+	        - $dns1
+	        search:
+	        - ijsselstreek.local
+	  version: 2
+	" | sudo tee "/etc/netplan/$networkConfig"
+	EOF
+>>>>>>> 6d8f1fdfb8d76637891d03f2ca5a2aec50869b30
 
 sudo rm -f /etc/machine-id                                       # Reset machine-id
 sudo dbus-uuidgen --ensure=/etc/machine-id

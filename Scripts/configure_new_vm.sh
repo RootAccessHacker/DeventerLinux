@@ -28,7 +28,7 @@ if ! grep "$ipaddr $newHostname $newHostname.$realm" /etc/hosts; then
     echo "$ipaddr $newHostname $newHostname.$realm" | sudo tee -a /etc/hosts
     sudo sed -i "s|$currentHostname|$newHostname.$realm|g" /etc/hostname
 fi
-hostnamectl set-hostname $newHostname
+sudo hostnamectl set-hostname $newHostname
 
 sudo rm -f /etc/machine-id                                       # Reset machine-id
 sudo dbus-uuidgen --ensure=/etc/machine-id
@@ -70,7 +70,7 @@ if ! grep -Fxq "$checkConfig" /etc/environment; then
     HTTPS_PROXY="10.0.0.4:3129/"
     FTP_PROXY="10.0.0.4:3129/"
     NO_PROXY="localhost,127.0.0.1,localaddress,.localdomain.com/"" | sudo tee -a /etc/environment 1> /dev/null
-    EOF
+EOF
 else
     echo "Proxy settings already configured"
 fi
@@ -101,7 +101,7 @@ sudo realm permit -a
 if [ ! -f "/etc/sudoers.d/domain_admins" ]; then
     sudo -i <<-EOF
     echo -e "%domain\ admins@$realm	ALL=(ALL)	ALL" | sudo tee "/etc/sudoers.d/domain_admins"
-    EOF
+EOF
 fi
 
 # Reboot server

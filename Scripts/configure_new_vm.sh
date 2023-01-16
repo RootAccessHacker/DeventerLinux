@@ -28,6 +28,7 @@ if ! grep "$ipaddr $newHostname $newHostname.$realm" /etc/hosts; then
 	echo "$ipaddr $newHostname $newHostname.$realm" | sudo tee -a /etc/hosts
 	sudo sed -i "s|$currentHostname|$newHostname.$realm|g" /etc/hostname
 fi
+hostnamectl set-hostname $newHostname
 
 sudo rm -f /etc/machine-id                                       # Reset machine-id
 sudo dbus-uuidgen --ensure=/etc/machine-id
@@ -87,7 +88,6 @@ sudo sed -i "5d" /usr/share/pam-configs/mkhomedir
 sudo pam-auth-update --enable mkhomedir
 
 # Join domain
-echo "Give password of domain admin"
 sudo realm join -U administrator "$realm"
 sudo realm list
 

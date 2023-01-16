@@ -88,6 +88,7 @@ sudo sed -i "5d" /usr/share/pam-configs/mkhomedir
 sudo pam-auth-update --enable mkhomedir
 
 # Join domain
+echo "Give the password for the domain administrator"
 sudo realm join -U administrator "$realm"
 sudo realm list
 

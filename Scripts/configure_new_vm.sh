@@ -15,7 +15,7 @@ read -r newHostname
 echo -n "IPv4 address: "                                         # IPv4 address
 read -r ipaddr
 
-echo -n "Prefix/netmask CIDR: "                                               # Prefix/netmask CIDR
+echo -n "Prefix/netmask CIDR: "                                  # Prefix/netmask CIDR
 read -r CIDR
 
 ip a
@@ -25,8 +25,8 @@ read -r adapterName
 
 # Put ip address, hostname and FQDN into hosts file and set hostname
 if ! grep "$ipaddr $newHostname $newHostname.$realm" /etc/hosts; then
-	echo "$ipaddr $newHostname $newHostname.$realm" | sudo tee -a /etc/hosts
-	sudo sed -i "s|$currentHostname|$newHostname.$realm|g" /etc/hostname
+    echo "$ipaddr $newHostname $newHostname.$realm" | sudo tee -a /etc/hosts
+    sudo sed -i "s|$currentHostname|$newHostname.$realm|g" /etc/hostname
 fi
 hostnamectl set-hostname $newHostname
 
@@ -59,20 +59,20 @@ sudo sed -i "18i nameserver $dns2" /etc/resolv.conf
 # Check if proxy settings are already in /etc/enviroment
 checkConfig="# Proxy ad.harderwijk.local"
 if ! grep -Fxq "$checkConfig" /etc/environment; then
-	# Configure proxy settings
-	sudo -i <<-EOF
-	echo "# Proxy ad.harderwijk.local
-	http_proxy="http://10.0.0.4:3129/"
-	https_proxy="http://10.0.0.4:3129/"
-	ftp_proxy="http://10.0.0.4:3129/"
-	no_proxy="localhost,127.0.0.1,localaddress,.localdomain.com/"
-	HTTP_PROXY="10.0.0.4:3129/"
-	HTTPS_PROXY="10.0.0.4:3129/"
-	FTP_PROXY="10.0.0.4:3129/"
-	NO_PROXY="localhost,127.0.0.1,localaddress,.localdomain.com/"" | sudo tee -a /etc/environment 1> /dev/null
-	EOF
+    # Configure proxy settings
+    sudo -i <<-EOF
+    echo "# Proxy ad.harderwijk.local
+    http_proxy="http://10.0.0.4:3129/"
+    https_proxy="http://10.0.0.4:3129/"
+    ftp_proxy="http://10.0.0.4:3129/"
+    no_proxy="localhost,127.0.0.1,localaddress,.localdomain.com/"
+    HTTP_PROXY="10.0.0.4:3129/"
+    HTTPS_PROXY="10.0.0.4:3129/"
+    FTP_PROXY="10.0.0.4:3129/"
+    NO_PROXY="localhost,127.0.0.1,localaddress,.localdomain.com/"" | sudo tee -a /etc/environment 1> /dev/null
+    EOF
 else
-	echo "Proxy settings already configured"
+    echo "Proxy settings already configured"
 fi
 
 # Apply network settings
@@ -99,9 +99,9 @@ sudo realm permit -a
 
 # Give all domain admins sudo rights
 if [ ! -f "/etc/sudoers.d/domain_admins" ]; then
-	sudo -i <<-EOF
-	echo -e "%domain\ admins@$realm	ALL=(ALL)	ALL" | sudo tee "/etc/sudoers.d/domain_admins"
-	EOF
+    sudo -i <<-EOF
+    echo -e "%domain\ admins@$realm	ALL=(ALL)	ALL" | sudo tee "/etc/sudoers.d/domain_admins"
+    EOF
 fi
 
 # Reboot server

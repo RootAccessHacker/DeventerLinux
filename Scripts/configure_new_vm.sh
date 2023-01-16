@@ -46,7 +46,7 @@ network:
       nameservers:
         addresses:
         - $dns1
-		- $dns2
+        - $dns2
         search:
         - $realm
   version: 2

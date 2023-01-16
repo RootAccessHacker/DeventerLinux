@@ -2,8 +2,8 @@
 
 # Check if proxy settings are already in /etc/enviroment
 checkConfig="# Proxy ad.harderwijk.local"
-
 if ! grep -Fxq "$checkConfig" /etc/environment; then
+	# Configure proxy settings
 	sudo -i <<-EOF
 	echo "# Proxy ad.harderwijk.local
 	http_proxy="http://10.0.0.4:3129/"

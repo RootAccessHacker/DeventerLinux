@@ -1,0 +1,55 @@
+---
+#ansible-playbook zabbix_agent.yaml -i ../inventory --ask-pass --ask-become-pass
+- name: Setup zabbix agent
+  hosts: test
+  become: true
+  vars:
+    zabbix_server: '10.0.0.9'
+  tasks:
+  - name: Populate service facts
+    service_facts:
+
+  - name: deb get package
+    shell: wget https://repo.zabbix.com/zabbix/6.2/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.2-4%2Bubuntu20.04_all.deb
+    when: "'zabbix-agent' not in services"
+
+  - name: unpack deb
+    shell: dpkg -i zabbix-release_6.2-4+ubuntu20.04_all.deb
+    
+  - name: update
+    shell: apt update
+
+  - name: apt install zabbix-agent
+    apt:
+      name: zabbix-agent
+      state: present
+    when: "'zabbix-agent' not in services"
+
+  - name: "Add server ip to config"
+    lineinfile:
+      path: /etc/zabbix/zabbix_agentd.conf
+      regexp: '{{item.From}}'
+      line: '{{item.To}}'
+      state: present  
+    with_items:
+      - { From: 'Server=', To: 'Server={{ zabbix_server }}'}
+      - { From: 'ServerActive=', To: 'ServerActive={{ zabbix_server }}'}
+      - { From: 'Hostname=', To: 'Hostname={{ ansible_hostname }}'}
+
+  - name: Open port 10050 for zabbix-server
+    ansible.posix.firewalld:
+      port: 10050/tcp
+      permanent: yes
+      state: enabled
+
+  - name: Restart firewall
+    ansible.builtin.service:
+      name: firewalld
+      state: restarted
+      enabled: true
+
+  - name: Restart zabbix
+    ansible.builtin.service:
+      name: zabbix-agent
+      state: restarted
+      enabled: true

@@ -4,7 +4,7 @@
   hosts: test
   become: true
   vars:
-    zabbix_server: '10.0.0.17'
+    zabbix_server: '10.0.0.9'
   tasks:
   - name: Populate service facts
     service_facts:

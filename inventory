@@ -7,7 +7,7 @@
 [Proxy]
 10.0.0.14
 
-[Script_executor]
+[acs]
 10.0.0.15
 
 [webserver]

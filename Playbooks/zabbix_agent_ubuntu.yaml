@@ -1,5 +1,6 @@
 ---
 #ansible-playbook zabbix_agent.yaml -i ../inventory --ask-pass --ask-become-pass
+# Ansible Playbook for Ubuntu Systems
 - name: Setup zabbix agent
   hosts: test
   become: true
@@ -37,19 +38,10 @@
       - { From: 'Hostname=', To: 'Hostname={{ ansible_hostname }}'}
 
   - name: Open port 10050 for zabbix-server
-    ansible.posix.firewalld:
-      port: 10050/tcp
-      permanent: yes
-      state: enabled
-
+    shell: sudo firewall-cmd --permanent --add-port=10050/tcp
+    
   - name: Restart firewall
-    ansible.builtin.service:
-      name: firewalld
-      state: restarted
-      enabled: true
+    shell: sudo firewall-cmd --reload
 
   - name: Restart zabbix
-    ansible.builtin.service:
-      name: zabbix-agent
-      state: restarted
-      enabled: true
+    shell: sudo service zabbix-agent restart

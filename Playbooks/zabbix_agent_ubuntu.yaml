@@ -1,6 +1,5 @@
 ---
 #ansible-playbook zabbix_agent.yaml -i ../inventory --ask-pass --ask-become-pass
-# Ansible Playbook for Ubuntu Systems
 - name: Setup zabbix agent
   hosts: test
   become: true
@@ -25,6 +24,9 @@
       name: zabbix-agent
       state: present
     when: "'zabbix-agent' not in services"
+
+  - name: install firewalld
+    shell: sudo apt install firewalld
 
   - name: "Add server ip to config"
     lineinfile:

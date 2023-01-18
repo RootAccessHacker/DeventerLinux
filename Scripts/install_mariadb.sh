@@ -3,37 +3,56 @@
 # Script variables
 ip1="10.0.0.18"
 ip2="10.0.0.19"
+ip3="10.100.0.2"
+dbAdmin="administrator"
+dbAdminPasswd="Harderwijk1-2"
 
 # Install mariadb packages
-sudo apt remove mariadb-server -y
+sudo apt update
 sudo apt install software-properties-common -y
-sudo apt-key adv --fetch-keys 'https://mariadb.org/mariadb_release_signing_key.asc' -y
-sudo add-apt-repository 'deb [arch=amd64,arm64,ppc64el] http://mariadb.mirror.liquidtelecom.com/repo/10.4/ubuntu bionic main' -y
+sudo apt-key adv --fetch-keys 'https://mariadb.org/mariadb_release_signing_key.asc'
+sudo add-apt-repository 'deb [arch=amd64,arm64,ppc64el] https://mariadb.mirror.liquidtelecom.com/repo/10.6/ubuntu focal main'
 sudo apt update
 sudo apt install mariadb-server mariadb-client -y
-sudo mysql_secure_installation
 
-# Enable mariadb server
-sudo systemctl enable --now mariadb
+# Run mariadb secure installation
+echo
+echo "Give as answers for the mysql secure installation the following answers:"
+echo "Empty password (just press enter)"
+echo "n"
+echo "n"
+echo "y"
+echo "y"
+echo "y"
+echo "y"
+sudo mysql_secure_installation
 
 # Create mariadb database for moodle
 sudo mariadb -e "CREATE DATABASE moodledb;"
-sudo mariadb -e "CREATE USER 'administrator'@'localhost' IDENTIFIED BY 'Harderwijk1-2';"
-sudo mariadb -e "GRANT ALL PRIVILEGES ON moodledb.* TO 'administrator'@'localhost';"
+sudo mariadb -e "CREATE USER '$dbAdmin'@'localhost' IDENTIFIED BY '$dbAdminPasswd';"
+sudo mariadb -e "GRANT ALL PRIVILEGES ON *.* TO '$dbAdmin'@'localhost';"
+sudo mariadb -e "GRANT ALL PRIVILEGES ON *.* TO '$dbAdmin'@'10.0.0.17';"
 sudo mariadb -e "FLUSH PRIVILEGES;"
 
-# Configuring Galera cluster in /etc/mysql/my.cnf
-sudo sed -i "s|#wsrep_on=ON|wsrep_on=ON|g" /etc/mysql/my.cnf
-sudo sed -i "s|#wsrep_provider=*|wsrep_provider=/usr/lib/galera/libgalera_smm.so|g" /etc/mysql/my.cnf
-sudo sed -i "s|#wsrep_cluster_address=*|wsrep_cluster_address="gcomm://$ip1,$ip2"|g" /etc/mysql/my.cnf
-sudo sed -i "s|#binlog_format=row|binlog_format=row|g" /etc/mysql/my.cnf
-sudo sed -i "s|#default_storage_engine=InnoDB|default_storage_engine=InnoDB|g" /etc/mysql/my.cnf
-sudo sed -i "s|#innodb_autoinc_lock_mode=2|innodb_autoinc_lock_mode=2|g" /etc/mysql/my.cnf
-sudo sed -i "s|#bind-address=0.0.0.0|bind-address=0.0.0.0|g" /etc/mysql/my.cnf
+# Change mariadb bind address
+sudo sed -i "s|bind-address =*|bind-address = 0.0.0.0|g" /etc/mysql/mariadb.conf.d/50-server.cnf
+
+# Append Galera cluster config to 60-galera.cnf
+sudo -i <<-EOF
+echo "
+wsrep_on=ON
+wsrep_provider=/usr/lib/galera/libgalera_smm.so
+wsrep_cluster_address="gcomm://$ip1,$ip2,$ip3"
+binlog_format=row
+default_storage_engine=InnoDB
+innodb_autoinc_lock_mode=2
+bind-address=0.0.0.0
+" | sudo tee -a /etc/mysql/mariadb.conf.d/60-galera.cnf >1 /dev/null
+EOF
 
 correctAnswer=false
 while ! $correctAnswer; do
-    # Ask if this is the firts node in the Galera cluster
+    # Ask if this is the first node in the Galera cluster
     echo -n "Is this the first node in the Galera cluster? y/n: "
     read -r firstNode
     if [ "$firstNode" == "y" ] || [ "$firstNode" == "Y" ]; then
@@ -47,5 +66,6 @@ while ! $correctAnswer; do
     fi
 done
 
-# Check if all nodes are running in the cluster
+# Enable mariadb server and check if all nodes are running in the cluster
+sudo systemctl enable --now mariadb
 sudo mysql -u root -e "show status like 'wsrep_cluster%';"

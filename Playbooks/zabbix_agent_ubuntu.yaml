@@ -26,7 +26,7 @@
     when: "'zabbix-agent' not in services"
 
   - name: install firewalld
-    shell: sudo apt install firewalld
+    shell: sudo apt install firewalld -y
 
   - name: "Add server ip to config"
     lineinfile:

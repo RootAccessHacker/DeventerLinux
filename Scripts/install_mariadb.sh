@@ -30,7 +30,8 @@ sudo mysql_secure_installation
 sudo mariadb -e "CREATE DATABASE moodledb;"
 sudo mariadb -e "CREATE USER '$dbAdmin'@'localhost' IDENTIFIED BY '$dbAdminPasswd';"
 sudo mariadb -e "GRANT ALL PRIVILEGES ON *.* TO '$dbAdmin'@'localhost';"
-sudo mariadb -e "GRANT ALL PRIVILEGES ON *.* TO '$dbAdmin'@'10.0.0.17';"
+sudo mariadb -e "CREATE USER '$dbAdmin'@'10.0.0.21' IDENTIFIED BY '$dbAdminPasswd';"
+sudo mariadb -e "GRANT ALL PRIVILEGES ON *.* TO '$dbAdmin'@'10.0.0.21';"
 sudo mariadb -e "FLUSH PRIVILEGES;"
 
 # Change mariadb bind address

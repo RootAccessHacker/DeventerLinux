@@ -3,7 +3,6 @@
 # Script variables
 ip1="10.0.0.18"
 ip2="10.0.0.19"
-ip3="10.100.0.2"
 dbAdmin="administrator"
 dbAdminPasswd="Harderwijk1-2"
 
@@ -42,7 +41,7 @@ sudo -i <<-EOF
 echo "
 wsrep_on=ON
 wsrep_provider=/usr/lib/galera/libgalera_smm.so
-wsrep_cluster_address="gcomm://$ip1,$ip2,$ip3"
+wsrep_cluster_address="gcomm://$ip1,$ip2"
 binlog_format=row
 default_storage_engine=InnoDB
 innodb_autoinc_lock_mode=2
@@ -59,7 +58,7 @@ while ! $correctAnswer; do
         sudo galera_new_cluster
         correctAnswer=true
     elif [ "$firstNode" == "n" ] || [ "$firstNode" == "N" ]; then
-        sudo service mariadb restart
+        sudo systemctl restart mariadb
         correctAnswer=true
     else
         echo "Not a correct answer is given."

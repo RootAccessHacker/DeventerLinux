@@ -1,7 +1,7 @@
 ---
 #ansible-playbook zabbix_agent.yaml -i ../inventory --ask-pass --ask-become-pass
 - name: Setup zabbix agent
-  hosts: servers
+  hosts: harderwijk
   become: true
   vars:
     zabbix_server: '10.0.0.9'

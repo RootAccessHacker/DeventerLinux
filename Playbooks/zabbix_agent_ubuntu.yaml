@@ -1,7 +1,7 @@
 ---
 #ansible-playbook zabbix_agent.yaml -i ../inventory --ask-pass --ask-become-pass
 - name: Setup zabbix agent
-  hosts: harderwijk
+  hosts: test
   become: true
   vars:
     zabbix_server: '10.0.0.9'
@@ -26,7 +26,9 @@
     when: "'zabbix-agent' not in services"
 
   - name: install firewalld
-    shell: sudo apt install firewalld -y
+    apt:
+      name: firewalld
+      state: present
 
   - name: "Add server ip to config"
     lineinfile:
@@ -40,10 +42,15 @@
       - { From: 'Hostname=', To: 'Hostname={{ ansible_hostname }}'}
 
   - name: Open port 10050 for zabbix-server
-    shell: sudo firewall-cmd --permanent --add-port=10050/tcp
+    ansible.posix.firewalld:
+      port: 10050/tcp
+      permanent: yes
+      state: enabled
     
-  - name: Restart firewall
-    shell: sudo firewall-cmd --reload
+  - name: Reload service firewalld
+    systemd:
+      name: firewalld
+      state: reloaded
 
   - name: Restart zabbix
     shell: sudo service zabbix-agent restart

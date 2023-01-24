@@ -25,11 +25,12 @@ AllowedIPs = 172.16.1.1/24
 " | sudo tee /etc/wireguard/moodle.conf >1 /dev/null
 EOF
 
+# Enable services
+sudo systemctl enable --now wg-quick@moodle
+sudo systemctl enable --now apache2
+
 # Get ssl certificate
 sudo certbot --apache
-
-# Start & enable services
-sudo systemctl enable --now wg-quick@moodle apache2 
 
 #Enable .htaccess Override
 sudo -i <<-EOF

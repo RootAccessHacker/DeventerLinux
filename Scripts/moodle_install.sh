@@ -143,3 +143,5 @@ sudo crontab -l | grep -v -F "$cronJob" ; echo "$cronJob" | sudo crontab -
 # install moodle
 cd /var/www/html/moodle/admin/cli
 sudo -u root /usr/bin/php install.php
+sudo rm -r $directory/moodle
+sudo rm -r $directory/moodle.tgz

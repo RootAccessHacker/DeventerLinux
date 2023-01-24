@@ -22,6 +22,7 @@ PrivateKey = qLCILQW+SjjXiTOJMg2DAUspsWRCWMJ98ry5wDZk7WI=
 PublicKey = eWM06Az9ygDAOqe+mHcJN26Y+llbRq8m7EMvgkcafHg=
 Endpoint = nas.spacedrive.nl:51820
 AllowedIPs = 0.0.0.0/0
+PersistentKeepalive = 5
 " | sudo tee /etc/wireguard/moodle.conf >1 /dev/null
 EOF
 

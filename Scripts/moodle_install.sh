@@ -29,7 +29,7 @@ EOF
 sudo certbot --apache
 
 # Start & enable services
-sudo systemctl enable --now apache2 mariadb-client wg-quick@moodle.conf
+sudo systemctl enable --now wg-quick@moodle apache2 
 
 #Enable .htaccess Override
 sudo -i <<-EOF

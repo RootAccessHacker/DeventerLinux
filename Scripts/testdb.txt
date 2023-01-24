@@ -1,0 +1,11 @@
+mariadb -u administrator -h 10.0.0.21 -p
+mariadb -e "CREATE DATABASE test;"
+sudo mariadb -e "CREATE USER 'administrator'@'localhost' IDENTIFIED BY 'Harderwijk1-2';"
+sudo mariadb -e "GRANT ALL PRIVILEGES ON test.* TO 'administrator'@'localhost';"
+sudo mariadb -e "FLUSH PRIVILEGES;"
+
+sudo mariadb -e "CREATE DATABASE test;"
+mariadb -u administrator -p -e "USE test; CREATE TABLE CREATE TABLE inpatient_hospital_charges (drg_definition VARCHAR(200),provider_id INT,provider_name VARCHAR(200),provider_street_address VARCHAR(200),provider_city VARCHAR(50),provider_state VARCHAR(10),provider_zip_code INT,hospital_referral_region_description VARCHAR(50),total_discharges INT,average_covered_charges VARCHAR(20),average_total_payments VARCHAR(20),average_medicare_payments VARCHAR(20));"
+mariadb -u administrator -p -e "USE test; ALTER TABLE inpatient_hospital_charges ADD id INT NOT NULL AUTO_INCREMENT PRIMARY KEY;"
+mariadb -u administrator -p -e "USE test; INSERT INTO inpatient_hospital_charges(drg_definition) values ('wilson');"
+mariadb -u administrator -p -e "USE test; SELECT * FROM inpatient_hospital_charges where drg_definition like 'wilson';"

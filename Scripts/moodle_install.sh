@@ -25,6 +25,9 @@ AllowedIPs = 172.16.1.1/24
 " | sudo tee /etc/wireguard/moodle.conf >1 /dev/null
 EOF
 
+# Get ssl certificate
+sudo certbot --apache
+
 # Start & enable services
 sudo systemctl enable --now apache2 mariadb-client wg-quick@moodle.conf
 
@@ -94,9 +97,6 @@ EOF
 
 sudo sed -i "s|;max_input_vars = 1000 ^|max_input_vars = 5000" /etc/php/7.4/apache2/php.ini
 sudo a2ensite ijsselstreeklearning.nl
-
-# Get ssl certificate
-sudo certbot --apache
 
 #install moodle
 wget -O moodle.tgz https://download.moodle.org/stable401/moodle-4.1.tgz

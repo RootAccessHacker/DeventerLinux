@@ -35,7 +35,8 @@ sudo a2enmod rewrite
 sudo systemctl enable --now apache2
 
 # Get ssl certificate
-sudo certbot --apache --register-unsafely-without-email
+sudo certbot --apache
+#sudo certbot --apache --register-unsafely-without-email
 #sudo mkdir -p /etc/letsencrypt/live/www.ijsselstreekonlineleren.nl
 #sudo mkdir -p /etc/letsencrypt/archive/www.ijsselstreekonlineleren.nl
 #sudo wget -P /etc/letsencrypt/archive/www.ijsselstreekonlineleren.nl https://raw.githubusercontent.com/RootAccessHacker/DeventerLinux/roland/certs/cert1.pem

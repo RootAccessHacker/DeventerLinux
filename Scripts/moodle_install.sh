@@ -22,7 +22,7 @@ PrivateKey = qLCILQW+SjjXiTOJMg2DAUspsWRCWMJ98ry5wDZk7WI=
 PublicKey = eWM06Az9ygDAOqe+mHcJN26Y+llbRq8m7EMvgkcafHg=
 Endpoint = nas.spacedrive.nl:51820
 AllowedIPs = 172.16.1.1/24
-" | sudo tee /etc/wireguard/moodle.conf >1 /def/null
+" | sudo tee /etc/wireguard/moodle.conf >1 /dev/null
 EOF
 
 # Start & enable services
@@ -34,7 +34,7 @@ echo -e "
 <Directory /var/www/html>
     AllowOverride ALL
 </Directory>
-" | sudo tee -a /etc/apache2/apache2.conf >1 /def/null
+" | sudo tee -a /etc/apache2/apache2.conf >1 /dev/null
 EOF
 
 sudo mkdir /etc/apache2/certs
@@ -89,7 +89,7 @@ echo -e "
     SSLCertificateKeyFile /etc/letsencrypt/live/www.ijsselstreeklearning.nl/privkey.pem
     Include /etc/letsencrypt/options-ssl-apache.conf
 </VirtualHost>
-" | sudo tee /etc/apache2/sites-available/000-default.conf >1 /def/null
+" | sudo tee /etc/apache2/sites-available/000-default.conf >1 /dev/null
 EOF
 
 sudo sed -i "s|;max_input_vars = 1000 ^|max_input_vars = 5000" /etc/php/7.4/apache2/php.ini
@@ -122,7 +122,7 @@ sudo sed -i "s|\$CFG->dbname    = 'moodle';*|\$CFG->dbname    = 'moodledb';|g" /
 sudo sed -i "s|\$CFG->dbuser    = 'username';*|\$CFG->dbuser    = 'administrator';|g" /var/www/html/moodle/config.php
 sudo sed -i "s|\$CFG->dbpass    = 'password';*|\$CFG->dbpass    = 'Harderwijk1-2';|g" /var/www/html/moodle/config.php
 sudo sed -i "s|'dbsocket'  => false,*| 'dbsocket'  => true,|g" /var/www/html/moodle/config.php
-sudo sed -i "s|'dbport'    => '',*|'dbport'    =>; '3306',|g" /var/www/html/moodle/config.php
+sudo sed -i "s|'dbport'    => '',*|'dbport'    => '3306',|g" /var/www/html/moodle/config.php
 sudo sed -i "s|\$CFG->wwwroot   = 'http:\/\/example.com\/moodle';*|\$CFG->wwwroot   = 'https:\/\/www.ijsselstreeklearning.nl\/moodle';|g" /var/www/html/moodle/config.php
 sudo sed -i "s|\$CFG->dataroot  = '\/home\/example\/moodledata';*|\$CFG->dataroot  = '\/var\/moodledata';|g" /var/www/html/moodle/config.php
 

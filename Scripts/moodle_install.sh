@@ -63,7 +63,7 @@ echo -e "
         # However, you must set it for any further virtual host explicitly.
         ServerName www.ijsselstreeklearning.nl
         ServerAdmin webmaster@localhost
-        DocumentRoot /var/www/html/moodle
+        DocumentRoot /var/www/html
 
         # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
         # error, crit, alert, emerg.
@@ -90,7 +90,7 @@ echo -e "
 <VirtualHost *:443>
     ServerName www.ijsselstreeklearning.nl
     ServerAdmin webmaster@localhost
-    DocumentRoot /var/www/html/moodle
+    DocumentRoot /var/www/html
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
     SSLEngine on

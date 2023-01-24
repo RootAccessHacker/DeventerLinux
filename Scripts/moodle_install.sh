@@ -25,10 +25,11 @@ AllowedIPs = 0.0.0.0/0
 PersistentKeepalive = 5
 " | sudo tee /etc/wireguard/moodle.conf >1 /dev/null
 EOF
-sleep 10
 
 # Enable services
 sudo systemctl enable --now wg-quick@moodle
+echo "Waiting for WireGuard tunnel to start..."
+sleep 10
 sudo a2enmod ssl
 sudo a2enmod rewrite
 sudo systemctl enable --now apache2

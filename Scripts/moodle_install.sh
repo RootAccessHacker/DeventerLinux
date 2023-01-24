@@ -27,6 +27,8 @@ EOF
 
 # Enable services
 sudo systemctl enable --now wg-quick@moodle
+sudo a2enmod ssl
+sudo a2enmod rewrite
 sudo systemctl enable --now apache2
 
 # Get ssl certificate
@@ -53,8 +55,7 @@ echo -e "
         # match this virtual host. For the default virtual host (this file) this
         # value is not decisive as it is used as a last resort host regardless.
         # However, you must set it for any further virtual host explicitly.
-        ServerName ijsselstreeklearning.nl
-        ServerAlias www.ijsselstreeklearning.nl
+        ServerName www.ijsselstreeklearning.nl
         ServerAdmin webmaster@localhost
         DocumentRoot /var/www/html/moodle
 
@@ -81,17 +82,15 @@ echo -e "
 # vim: syntax=apache ts=4 sw=4 sts=4 sr noet
 
 <VirtualHost *:443>
-    ServerName ijsselstreeklearning.nl
-    ServerAlias www.ijsselstreeklearning.nl
+    ServerName www.ijsselstreeklearning.nl
     ServerAdmin webmaster@localhost
     DocumentRoot /var/www/html/moodle
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
     SSLEngine on
-    ServerName www.ijsselstreeklearning.nl
-    SSLCertificateFile /etc/letsencrypt/live/www.ijsselstreeklearning.nl/fullchain.pem
-    SSLCertificateKeyFile /etc/letsencrypt/live/www.ijsselstreeklearning.nl/privkey.pem
-    Include /etc/letsencrypt/options-ssl-apache.conf
+#    SSLCertificateFile /etc/letsencrypt/live/www.ijsselstreeklearning.nl/fullchain.pem
+#    SSLCertificateKeyFile /etc/letsencrypt/live/www.ijsselstreeklearning.nl/privkey.pem
+#    Include /etc/letsencrypt/options-ssl-apache.conf
 </VirtualHost>
 " | sudo tee /etc/apache2/sites-available/000-default.conf >1 /dev/null
 EOF

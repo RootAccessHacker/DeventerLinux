@@ -3,7 +3,6 @@
 # Script variables
 ip1="10.0.0.18"
 ip2="10.0.0.19"
-ip3="10.100.0.2"
 
 # Install mariadb packages
 sudo apt update
@@ -89,7 +88,6 @@ backend mdb_servers
         balance leastconn
         server mdb1 $ip1:3306 check
         server mdb2 $ip2:3306 check
-        server mdb3 $ip3:3306 backup
 " | sudo tee /etc/haproxy/haproxy.cfg >1 /dev/null
 EOF
 

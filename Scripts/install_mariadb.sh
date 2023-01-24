@@ -3,7 +3,6 @@
 # Script variables
 ip1="10.0.0.18"
 ip2="10.0.0.19"
-ip3="10.100.0.2"
 dbAdmin="administrator"
 dbAdminPasswd="Harderwijk1-2"
 
@@ -31,7 +30,8 @@ sudo mysql_secure_installation
 sudo mariadb -e "CREATE DATABASE moodledb;"
 sudo mariadb -e "CREATE USER '$dbAdmin'@'localhost' IDENTIFIED BY '$dbAdminPasswd';"
 sudo mariadb -e "GRANT ALL PRIVILEGES ON *.* TO '$dbAdmin'@'localhost';"
-sudo mariadb -e "GRANT ALL PRIVILEGES ON *.* TO '$dbAdmin'@'10.0.0.17';"
+sudo mariadb -e "CREATE USER '$dbAdmin'@'10.0.0.21' IDENTIFIED BY '$dbAdminPasswd';"
+sudo mariadb -e "GRANT ALL PRIVILEGES ON *.* TO '$dbAdmin'@'10.0.0.21';"
 sudo mariadb -e "FLUSH PRIVILEGES;"
 
 # Change mariadb bind address
@@ -42,7 +42,7 @@ sudo -i <<-EOF
 echo "
 wsrep_on=ON
 wsrep_provider=/usr/lib/galera/libgalera_smm.so
-wsrep_cluster_address="gcomm://$ip1,$ip2,$ip3"
+wsrep_cluster_address="gcomm://$ip1,$ip2"
 binlog_format=row
 default_storage_engine=InnoDB
 innodb_autoinc_lock_mode=2
@@ -59,7 +59,7 @@ while ! $correctAnswer; do
         sudo galera_new_cluster
         correctAnswer=true
     elif [ "$firstNode" == "n" ] || [ "$firstNode" == "N" ]; then
-        sudo service mariadb restart
+        sudo systemctl restart mariadb
         correctAnswer=true
     else
         echo "Not a correct answer is given."

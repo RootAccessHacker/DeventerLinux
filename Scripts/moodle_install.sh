@@ -44,13 +44,13 @@ sudo wget -P /etc/letsencrypt/archive/www.ijsselstreeklearning.nl https://raw.gi
 sudo wget -P /etc/letsencrypt/archive/www.ijsselstreeklearning.nl https://raw.githubusercontent.com/RootAccessHacker/DeventerLinux/roland/certs/privkey1.pem
 
 # Create symbolic links
-sudo ln -s /etc/letsencrypt/live/www.ijsselstreeklearning.nl/cert.pem /etc/letsencrypt/archive/www.ijsselstreeklearning.nl/cert1.pem
-sudo ln -s /etc/letsencrypt/live/www.ijsselstreeklearning.nl/chain.pem /etc/letsencrypt/archive/www.ijsselstreeklearning.nl/chain1.pem
-sudo ln -s /etc/letsencrypt/live/www.ijsselstreeklearning.nl/fullchain.pem /etc/letsencrypt/archive/www.ijsselstreeklearning.nl/fullchain1.pem
-sudo ln -s /etc/letsencrypt/live/www.ijsselstreeklearning.nl/privkey.pem /etc/letsencrypt/archive/www.ijsselstreeklearning.nl/privkey1.pem
+sudo ln -s /etc/letsencrypt/archive/www.ijsselstreeklearning.nl/cert1.pem /etc/letsencrypt/live/www.ijsselstreeklearning.nl/cert.pem
+sudo ln -s /etc/letsencrypt/archive/www.ijsselstreeklearning.nl/chain1.pem /etc/letsencrypt/live/www.ijsselstreeklearning.nl/chain.pem
+sudo ln -s /etc/letsencrypt/archive/www.ijsselstreeklearning.nl/fullchain1.pem /etc/letsencrypt/live/www.ijsselstreeklearning.nl/fullchain.pem
+sudo ln -s /etc/letsencrypt/archive/www.ijsselstreeklearning.nl/privkey1.pem /etc/letsencrypt/live/www.ijsselstreeklearning.nl/privkey.pem
 
 # Fix AllowedIPs WireGuard
-sudo sed -i "s|AllowedIps*|AllowedIPs = 172.16.1.1/24|g" /etc/wireguard/moodle.conf
+sudo sed -i "s|AllowedIPs = 0.0.0.0/0|AllowedIPs = 172.16.1.1/24|g" /etc/wireguard/moodle.conf
 sudo systemctl restart wg-quick@moodle
 
 #Enable .htaccess Override
@@ -107,6 +107,9 @@ echo -e "
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
     SSLEngine on
+    SSLCertificateFile /etc/letsencrypt/live/www.ijsselstreeklearning.nl/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/www.ijsselstreeklearning.nl/privkey.pem
+    Include /etc/letsencrypt/options-ssl-apache.conf
 </VirtualHost>
 " | sudo tee /etc/apache2/sites-available/000-default.conf >1 /dev/null
 EOF

@@ -35,7 +35,7 @@ sudo a2enmod rewrite
 sudo systemctl enable --now apache2
 
 # Get ssl certificate
-sudo certbot --apache
+sudo certbot --apache --dry-run
 
 # Fix AllowedIPs WireGuard
 sudo sed -i "s|AllowedIps*|AllowedIPs = 172.16.1.1/24|g" /etc/wireguard/moodle.conf
@@ -135,11 +135,6 @@ sudo sed -i "s|\$CFG->dataroot  = '\/home\/example\/moodledata';*|\$CFG->dataroo
 
 # Restart apache to enabel php code
 sudo systemctl restart apache2
-
-# Create sarg -x cronjob
-cronCommand="certbot --apache"
-cronJob="@monthly $cronCommand"
-sudo crontab -l | grep -v -F "$cronJob" ; echo "$cronJob" | sudo crontab -
 
 # install moodle
 cd /var/www/html/moodle/admin/cli

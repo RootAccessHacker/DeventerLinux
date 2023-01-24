@@ -95,9 +95,6 @@ echo -e "
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
     SSLEngine on
-#    SSLCertificateFile /etc/letsencrypt/live/www.ijsselstreeklearning.nl/fullchain.pem
-#    SSLCertificateKeyFile /etc/letsencrypt/live/www.ijsselstreeklearning.nl/privkey.pem
-#    Include /etc/letsencrypt/options-ssl-apache.conf
 </VirtualHost>
 " | sudo tee /etc/apache2/sites-available/000-default.conf >1 /dev/null
 EOF

@@ -35,7 +35,7 @@ sudo a2enmod rewrite
 sudo systemctl enable --now apache2
 
 # Get ssl certificate
-sudo certbot --apache --dry-run
+sudo certbot --apache --register-unsafely-without-email
 
 # Fix AllowedIPs WireGuard
 sudo sed -i "s|AllowedIps*|AllowedIPs = 172.16.1.1/24|g" /etc/wireguard/moodle.conf
@@ -139,5 +139,4 @@ sudo systemctl restart apache2
 # install moodle
 cd /var/www/html/moodle/admin/cli
 sudo -u root /usr/bin/php install.php
-sudo rm -r $directory/moodle
 sudo rm -r $directory/moodle.tgz

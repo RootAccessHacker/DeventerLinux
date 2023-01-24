@@ -29,7 +29,7 @@ EOF
 # Enable services
 sudo systemctl enable --now wg-quick@moodle
 echo "Waiting for WireGuard tunnel to start..."
-sleep 10
+sleep 20
 sudo a2enmod ssl
 sudo a2enmod rewrite
 sudo systemctl enable --now apache2

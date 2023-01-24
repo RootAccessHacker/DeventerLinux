@@ -35,19 +35,19 @@ sudo a2enmod rewrite
 sudo systemctl enable --now apache2
 
 # Get ssl certificate
-#sudo certbot --apache --register-unsafely-without-email
-sudo mkdir -p /etc/letsencrypt/live/www.ijsselstreeklearning.nl
-sudo mkdir -p /etc/letsencrypt/archive/www.ijsselstreeklearning.nl
-sudo wget -P /etc/letsencrypt/archive/www.ijsselstreeklearning.nl https://raw.githubusercontent.com/RootAccessHacker/DeventerLinux/roland/certs/cert1.pem
-sudo wget -P /etc/letsencrypt/archive/www.ijsselstreeklearning.nl https://raw.githubusercontent.com/RootAccessHacker/DeventerLinux/roland/certs/chain1.pem
-sudo wget -P /etc/letsencrypt/archive/www.ijsselstreeklearning.nl https://raw.githubusercontent.com/RootAccessHacker/DeventerLinux/roland/certs/fullchain1.pem
-sudo wget -P /etc/letsencrypt/archive/www.ijsselstreeklearning.nl https://raw.githubusercontent.com/RootAccessHacker/DeventerLinux/roland/certs/privkey1.pem
+sudo certbot --apache --register-unsafely-without-email
+#sudo mkdir -p /etc/letsencrypt/live/www.ijsselstreekonlineleren.nl
+#sudo mkdir -p /etc/letsencrypt/archive/www.ijsselstreekonlineleren.nl
+#sudo wget -P /etc/letsencrypt/archive/www.ijsselstreekonlineleren.nl https://raw.githubusercontent.com/RootAccessHacker/DeventerLinux/roland/certs/cert1.pem
+#sudo wget -P /etc/letsencrypt/archive/www.ijsselstreekonlineleren.nl https://raw.githubusercontent.com/RootAccessHacker/DeventerLinux/roland/certs/chain1.pem
+#sudo wget -P /etc/letsencrypt/archive/www.ijsselstreekonlineleren.nl https://raw.githubusercontent.com/RootAccessHacker/DeventerLinux/roland/certs/fullchain1.pem
+#sudo wget -P /etc/letsencrypt/archive/www.ijsselstreekonlineleren.nl https://raw.githubusercontent.com/RootAccessHacker/DeventerLinux/roland/certs/privkey1.pem
 
 # Create symbolic links
-sudo ln -s /etc/letsencrypt/archive/www.ijsselstreeklearning.nl/cert1.pem /etc/letsencrypt/live/www.ijsselstreeklearning.nl/cert.pem
-sudo ln -s /etc/letsencrypt/archive/www.ijsselstreeklearning.nl/chain1.pem /etc/letsencrypt/live/www.ijsselstreeklearning.nl/chain.pem
-sudo ln -s /etc/letsencrypt/archive/www.ijsselstreeklearning.nl/fullchain1.pem /etc/letsencrypt/live/www.ijsselstreeklearning.nl/fullchain.pem
-sudo ln -s /etc/letsencrypt/archive/www.ijsselstreeklearning.nl/privkey1.pem /etc/letsencrypt/live/www.ijsselstreeklearning.nl/privkey.pem
+#sudo ln -s /etc/letsencrypt/archive/www.ijsselstreekonlineleren.nl/cert1.pem /etc/letsencrypt/live/www.ijsselstreekonlineleren.nl/cert.pem
+#sudo ln -s /etc/letsencrypt/archive/www.ijsselstreekonlineleren.nl/chain1.pem /etc/letsencrypt/live/www.ijsselstreekonlineleren.nl/chain.pem
+#sudo ln -s /etc/letsencrypt/archive/www.ijsselstreekonlineleren.nl/fullchain1.pem /etc/letsencrypt/live/www.ijsselstreekonlineleren.nl/fullchain.pem
+#sudo ln -s /etc/letsencrypt/archive/www.ijsselstreekonlineleren.nl/privkey1.pem /etc/letsencrypt/live/www.ijsselstreekonlineleren.nl/privkey.pem
 
 # Fix AllowedIPs WireGuard
 sudo sed -i "s|AllowedIPs = 0.0.0.0/0|AllowedIPs = 172.16.1.1/24|g" /etc/wireguard/moodle.conf
@@ -74,7 +74,7 @@ echo -e "
         # match this virtual host. For the default virtual host (this file) this
         # value is not decisive as it is used as a last resort host regardless.
         # However, you must set it for any further virtual host explicitly.
-        ServerName www.ijsselstreeklearning.nl
+        ServerName www.ijsselstreekonlineleren.nl
         ServerAdmin webmaster@localhost
         DocumentRoot /var/www/html
 
@@ -101,21 +101,21 @@ echo -e "
 # vim: syntax=apache ts=4 sw=4 sts=4 sr noet
 
 <VirtualHost *:443>
-    ServerName www.ijsselstreeklearning.nl
+    ServerName www.ijsselstreekonlineleren.nl
     ServerAdmin webmaster@localhost
     DocumentRoot /var/www/html
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
     SSLEngine on
-    SSLCertificateFile /etc/letsencrypt/live/www.ijsselstreeklearning.nl/fullchain.pem
-    SSLCertificateKeyFile /etc/letsencrypt/live/www.ijsselstreeklearning.nl/privkey.pem
-    Include /etc/letsencrypt/options-ssl-apache.conf
+#    SSLCertificateFile /etc/letsencrypt/live/www.ijsselstreekonlineleren.nl/fullchain.pem
+#    SSLCertificateKeyFile /etc/letsencrypt/live/www.ijsselstreekonlineleren.nl/privkey.pem
+#    Include /etc/letsencrypt/options-ssl-apache.conf
 </VirtualHost>
 " | sudo tee /etc/apache2/sites-available/000-default.conf >1 /dev/null
 EOF
 
 sudo sed -i "s|;max_input_vars = 1000 ^|max_input_vars = 5000" /etc/php/7.4/apache2/php.ini
-sudo a2ensite ijsselstreeklearning.nl
+sudo a2ensite ijsselstreekonlineleren.nl
 
 #install moodle
 wget -O moodle.tgz https://download.moodle.org/stable401/moodle-4.1.tgz
@@ -142,7 +142,7 @@ sudo sed -i "s|\$CFG->dbuser    = 'username';*|\$CFG->dbuser    = 'administrator
 sudo sed -i "s|\$CFG->dbpass    = 'password';*|\$CFG->dbpass    = 'Harderwijk1-2';|g" /var/www/html/moodle/config.php
 sudo sed -i "s|'dbsocket'  => false,*|'dbsocket'  => true,|g" /var/www/html/moodle/config.php
 sudo sed -i "s|'dbport'    => '',*|'dbport'    => '3306',|g" /var/www/html/moodle/config.php
-sudo sed -i "s|\$CFG->wwwroot   = 'http:\/\/example.com\/moodle';*|\$CFG->wwwroot   = 'https:\/\/www.ijsselstreeklearning.nl\/moodle';|g" /var/www/html/moodle/config.php
+sudo sed -i "s|\$CFG->wwwroot   = 'http:\/\/example.com\/moodle';*|\$CFG->wwwroot   = 'https:\/\/www.ijsselstreekonlineleren.nl\/moodle';|g" /var/www/html/moodle/config.php
 sudo sed -i "s|\$CFG->dataroot  = '\/home\/example\/moodledata';*|\$CFG->dataroot  = '\/var\/moodledata';|g" /var/www/html/moodle/config.php
 
 # Restart apache to enabel php code

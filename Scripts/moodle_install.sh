@@ -7,7 +7,7 @@ sudo apt update && sudo apt upgrade -y
 sudo apt install snapd apache2 mariadb-client php libapache2-mod-php graphviz aspell ghostscript clamav php7.4-pspell php7.4-curl php7.4-gd php7.4-intl php7.4-mysql php7.4-xml php7.4-xmlrpc php7.4-ldap php7.4-zip php7.4-soap php7.4-mbstring php-mysql wireguard-tools net-tools resolvconf -y
 
 # Install certbot
-sudo snapd install --classic certbot
+sudo snap install --classic certbot
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
 
 # Create WireGuard configuration file
@@ -121,7 +121,7 @@ sudo sed -i "s|\$CFG->dhost    = 'localhost';*|\$CFG->dhost    = '10.0.0.21';|g"
 sudo sed -i "s|\$CFG->dbname    = 'moodle';*|\$CFG->dbname    = 'moodledb';|g" /var/www/html/moodle/config.php
 sudo sed -i "s|\$CFG->dbuser    = 'username';*|\$CFG->dbuser    = 'administrator';|g" /var/www/html/moodle/config.php
 sudo sed -i "s|\$CFG->dbpass    = 'password';*|\$CFG->dbpass    = 'Harderwijk1-2';|g" /var/www/html/moodle/config.php
-sudo sed -i "s|'dbsocket'  => false,*| 'dbsocket'  => true,|g" /var/www/html/moodle/config.php
+sudo sed -i "s|'dbsocket'  => false,*|'dbsocket'  => true,|g" /var/www/html/moodle/config.php
 sudo sed -i "s|'dbport'    => '',*|'dbport'    => '3306',|g" /var/www/html/moodle/config.php
 sudo sed -i "s|\$CFG->wwwroot   = 'http:\/\/example.com\/moodle';*|\$CFG->wwwroot   = 'https:\/\/www.ijsselstreeklearning.nl\/moodle';|g" /var/www/html/moodle/config.php
 sudo sed -i "s|\$CFG->dataroot  = '\/home\/example\/moodledata';*|\$CFG->dataroot  = '\/var\/moodledata';|g" /var/www/html/moodle/config.php

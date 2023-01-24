@@ -35,7 +35,22 @@ sudo a2enmod rewrite
 sudo systemctl enable --now apache2
 
 # Get ssl certificate
-sudo certbot --apache --register-unsafely-without-email
+#sudo certbot --apache --register-unsafely-without-email
+sudo mkdir -p /etc/letsencrypt/live/www.ijsselstreeklearning.nl/
+sudo mkdir -p /etc/letsencrypt/archive/www.ijsselstreeklearning.nl/cert1.pem
+sudo wget https://raw.githubusercontent.com/RootAccessHacker/DeventerLinux/roland/certs/cert1.pem
+sudo wget https://raw.githubusercontent.com/RootAccessHacker/DeventerLinux/roland/certs/chain1.pem
+sudo wget https://raw.githubusercontent.com/RootAccessHacker/DeventerLinux/roland/certs/fullchain1.pem
+sudo wget https://raw.githubusercontent.com/RootAccessHacker/DeventerLinux/roland/certs/privkey1.pem
+
+
+cert.pem
+chain.pem
+fullchain.pem
+privkey.pem
+
+
+
 
 # Fix AllowedIPs WireGuard
 sudo sed -i "s|AllowedIps*|AllowedIPs = 172.16.1.1/24|g" /etc/wireguard/moodle.conf

@@ -10,9 +10,9 @@
 # Script variable list
 ipAddress=$(hostname  -I | cut -f1 -d' ')		# Get IP address of this server
 hostname=$(hostname)					# Get hostname
-domain="udeventer"					# Get domain name
-realm="udeventer.nl"					# Get realm name
-dns="10.1.10.192"					# Get DNS address
+domain="ad.harderwijk"					# Get domain name
+realm="ad.harderwijk.local"					# Get realm name
+dns="10.0.0.2"					# Get DNS address
 
 # Put ip address, hostname and FQDN into hosts file and set hostname
 if ! grep "$ipAddress $hostname $hostname.$realm" /etc/hosts; then

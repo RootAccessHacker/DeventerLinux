@@ -117,7 +117,7 @@ sudo cp /var/www/html/moodle/config-dist.php /var/www/html/moodle/config.php
 
 #change those setings
 sudo sed -i "s|\$CFG->dbtype    = 'pgsql';*|\$CFG->dbtype    = 'mariadb';|g" /var/www/html/moodle/config.php
-sudo sed -i "s|\$CFG->dhost    = 'localhost';*|\$CFG->dhost    = '10.0.0.21';|g" /var/www/html/moodle/config.php
+sudo sed -i "s|\$CFG->dbhost    = 'localhost';*|\$CFG->dhost    = '10.0.0.21';|g" /var/www/html/moodle/config.php
 sudo sed -i "s|\$CFG->dbname    = 'moodle';*|\$CFG->dbname    = 'moodledb';|g" /var/www/html/moodle/config.php
 sudo sed -i "s|\$CFG->dbuser    = 'username';*|\$CFG->dbuser    = 'administrator';|g" /var/www/html/moodle/config.php
 sudo sed -i "s|\$CFG->dbpass    = 'password';*|\$CFG->dbpass    = 'Harderwijk1-2';|g" /var/www/html/moodle/config.php

@@ -21,7 +21,7 @@ PrivateKey = qLCILQW+SjjXiTOJMg2DAUspsWRCWMJ98ry5wDZk7WI=
 [Peer]
 PublicKey = eWM06Az9ygDAOqe+mHcJN26Y+llbRq8m7EMvgkcafHg=
 Endpoint = nas.spacedrive.nl:51820
-AllowedIPs = 172.16.1.1/24
+AllowedIPs = 0.0.0.0/0
 " | sudo tee /etc/wireguard/moodle.conf >1 /dev/null
 EOF
 
@@ -33,6 +33,10 @@ sudo systemctl enable --now apache2
 
 # Get ssl certificate
 sudo certbot --apache
+
+# Fix AllowedIPs WireGuard
+sudo sed -i "s|AllowedIps*|AllowedIPs = 172.16.1.1/24|g" /etc/wireguard/moodle.conf
+sudo systemctl restart wg-quick@moodle
 
 #Enable .htaccess Override
 sudo -i <<-EOF

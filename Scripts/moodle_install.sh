@@ -36,19 +36,6 @@ sudo systemctl enable --now apache2
 
 # Get ssl certificate
 sudo certbot --apache
-#sudo certbot --apache --register-unsafely-without-email
-#sudo mkdir -p /etc/letsencrypt/live/www.ijsselstreekonlineleren.nl
-#sudo mkdir -p /etc/letsencrypt/archive/www.ijsselstreekonlineleren.nl
-#sudo wget -P /etc/letsencrypt/archive/www.ijsselstreekonlineleren.nl https://raw.githubusercontent.com/RootAccessHacker/DeventerLinux/roland/certs/cert1.pem
-#sudo wget -P /etc/letsencrypt/archive/www.ijsselstreekonlineleren.nl https://raw.githubusercontent.com/RootAccessHacker/DeventerLinux/roland/certs/chain1.pem
-#sudo wget -P /etc/letsencrypt/archive/www.ijsselstreekonlineleren.nl https://raw.githubusercontent.com/RootAccessHacker/DeventerLinux/roland/certs/fullchain1.pem
-#sudo wget -P /etc/letsencrypt/archive/www.ijsselstreekonlineleren.nl https://raw.githubusercontent.com/RootAccessHacker/DeventerLinux/roland/certs/privkey1.pem
-
-# Create symbolic links
-#sudo ln -s /etc/letsencrypt/archive/www.ijsselstreekonlineleren.nl/cert1.pem /etc/letsencrypt/live/www.ijsselstreekonlineleren.nl/cert.pem
-#sudo ln -s /etc/letsencrypt/archive/www.ijsselstreekonlineleren.nl/chain1.pem /etc/letsencrypt/live/www.ijsselstreekonlineleren.nl/chain.pem
-#sudo ln -s /etc/letsencrypt/archive/www.ijsselstreekonlineleren.nl/fullchain1.pem /etc/letsencrypt/live/www.ijsselstreekonlineleren.nl/fullchain.pem
-#sudo ln -s /etc/letsencrypt/archive/www.ijsselstreekonlineleren.nl/privkey1.pem /etc/letsencrypt/live/www.ijsselstreekonlineleren.nl/privkey.pem
 
 # Fix AllowedIPs WireGuard
 sudo sed -i "s|AllowedIPs = 0.0.0.0/0|AllowedIPs = 172.16.1.1/24|g" /etc/wireguard/moodle.conf
@@ -128,12 +115,13 @@ echo -e "
         CustomLog ${APACHE_LOG_DIR}/access.log combined
 #        SSLEngine on
 </VirtualHost>
-" | sudo tee /etc/apache2/sites-available/default-ssl.conf >1 /dev/null
+" | sudo tee /etc/apache2/sites-available/000-default-le-ssl.conf >1 /dev/null
 EOF
 
 sudo sed -i "s|;max_input_vars = 1000 ^|max_input_vars = 5000" /etc/php/7.4/apache2/php.ini
 sudo a2ensite 000-default.conf
-sudo a2ensite default-ssl.conf
+sudo a2ensite 000-default-le-ssl.conf
+sudo a2dissite default-ssl.conf
 
 #install moodle
 wget -O moodle.tgz https://download.moodle.org/stable401/moodle-4.1.tgz

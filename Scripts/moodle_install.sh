@@ -46,11 +46,11 @@ sudo -i <<-EOF
 echo -e "<!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv=\"refresh\" content=\"5; url='https://www.ijsselstreekonlineleren.nl/moodle'\" />
+    <meta http-equiv=\"refresh\" content=\"5; url='https://www.moodlelekkerleren.nl/moodle'\" />
   </head>
   <body>
-    <p>Moodle leeromgeving ijsselstreekonlineleren.nl redirect.<p>
-    <p><a href=\"https://www.ijsselstreekonlineleren.nl/moodle\">Klik hier als de website niet doorgaat.</a></p>
+    <p>Moodle leeromgeving moodlelekkerleren.nl redirect.<p>
+    <p><a href=\"https://www.moodlelekkerleren.nl/moodle\">Klik hier als de website niet doorgaat.</a></p>
   </body>
 </html>" | sudo tee /var/www/html/index.html >1 /dev/null
 EOF
@@ -77,7 +77,7 @@ echo -e "
         # match this virtual host. For the default virtual host (this file) this
         # value is not decisive as it is used as a last resort host regardless.
         # However, you must set it for any further virtual host explicitly.
-        ServerName www.ijsselstreekonlineleren.nl
+        ServerName www.moodlelekkerleren.nl
         ServerAdmin webmaster@localhost
         DocumentRoot /var/www/html
 
@@ -108,7 +108,7 @@ EOF
 sudo -i <<-EOF
 echo -e "
 <VirtualHost *:443>
-        ServerName www.ijsselstreekonlineleren.nl
+        ServerName www.moodlelekkerleren.nl
         ServerAdmin webmaster@localhost
         DocumentRoot /var/www/html
         ErrorLog ${APACHE_LOG_DIR}/error.log
@@ -148,7 +148,7 @@ sudo sed -i "s|\$CFG->dbuser    = 'username';*|\$CFG->dbuser    = 'administrator
 sudo sed -i "s|\$CFG->dbpass    = 'password';*|\$CFG->dbpass    = 'Harderwijk1-2';|g" /var/www/html/moodle/config.php
 sudo sed -i "s|'dbsocket'  => false,*|'dbsocket'  => true,|g" /var/www/html/moodle/config.php
 sudo sed -i "s|'dbport'    => '',*|'dbport'    => '3306',|g" /var/www/html/moodle/config.php
-sudo sed -i "s|\$CFG->wwwroot   = 'http:\/\/example.com\/moodle';*|\$CFG->wwwroot   = 'https:\/\/www.ijsselstreekonlineleren.nl\/moodle';|g" /var/www/html/moodle/config.php
+sudo sed -i "s|\$CFG->wwwroot   = 'http:\/\/example.com\/moodle';*|\$CFG->wwwroot   = 'https:\/\/www.moodlelekkerleren.nl\/moodle';|g" /var/www/html/moodle/config.php
 sudo sed -i "s|\$CFG->dataroot  = '\/home\/example\/moodledata';*|\$CFG->dataroot  = '\/var\/moodledata';|g" /var/www/html/moodle/config.php
 
 # Restart apache to enabel php code

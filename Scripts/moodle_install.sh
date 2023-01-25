@@ -29,7 +29,7 @@ EOF
 # Enable services
 sudo systemctl enable --now wg-quick@moodle
 echo "Waiting for WireGuard tunnel to start..."
-sleep 20
+sleep 10
 sudo a2enmod ssl
 sudo a2enmod rewrite
 sudo systemctl enable --now apache2
@@ -54,7 +54,24 @@ sudo certbot --apache
 sudo sed -i "s|AllowedIPs = 0.0.0.0/0|AllowedIPs = 172.16.1.1/24|g" /etc/wireguard/moodle.conf
 sudo systemctl restart wg-quick@moodle
 
-#Enable .htaccess Override
+# Replace default index.html with redirect
+sudo -i <<-EOF
+echo -e "<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv=\"refresh\" content=\"5; url='https://www.ijsselstreekonlineleren.nl/moodle'\" />
+  </head>
+  <body>
+    <p>Moodle leeromgeving ijsselstreekonlineleren.nl redirect.<p>
+    <p><a href=\"https://www.ijsselstreekonlineleren.nl/moodle\">Klik hier als de website niet doorgaat.</a></p>
+  </body>
+</html>" | sudo tee /var/www/html/index.html >1 /dev/null
+EOF
+
+# Add global apache ServerName
+sudo echo -e "ServerName 127.0.0.1" | sudo tee -a /etc/apache2/apache2.conf
+
+# Enable .htaccess Override
 sudo -i <<-EOF
 echo -e "
 <Directory /var/www/html>
@@ -62,8 +79,6 @@ echo -e "
 </Directory>
 " | sudo tee -a /etc/apache2/apache2.conf >1 /dev/null
 EOF
-
-sudo mkdir /etc/apache2/certs
 
 sudo -i <<-EOF
 echo -e "
@@ -94,29 +109,31 @@ echo -e "
         # following line enables the CGI configuration for this host only
         # after it has been globally disabled with "a2disconf".
         #Include conf-available/serve-cgi-bin.conf
-        RewriteEngine on
-        RewriteCond %{HTTPS} !=on
-        RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R=301,L]
+#        RewriteEngine on
+#        RewriteCond %{HTTPS} !=on
+#        RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R=301,L]
 </VirtualHost>
 
 # vim: syntax=apache ts=4 sw=4 sts=4 sr noet
-
-<VirtualHost *:443>
-    ServerName www.ijsselstreekonlineleren.nl
-    ServerAdmin webmaster@localhost
-    DocumentRoot /var/www/html
-    ErrorLog ${APACHE_LOG_DIR}/error.log
-    CustomLog ${APACHE_LOG_DIR}/access.log combined
-    SSLEngine on
-#    SSLCertificateFile /etc/letsencrypt/live/www.ijsselstreekonlineleren.nl/fullchain.pem
-#    SSLCertificateKeyFile /etc/letsencrypt/live/www.ijsselstreekonlineleren.nl/privkey.pem
-#    Include /etc/letsencrypt/options-ssl-apache.conf
-</VirtualHost>
 " | sudo tee /etc/apache2/sites-available/000-default.conf >1 /dev/null
 EOF
 
+sudo -i <<-EOF
+echo -e "
+<VirtualHost *:443>
+        ServerName www.ijsselstreekonlineleren.nl
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/html
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+#        SSLEngine on
+</VirtualHost>
+" | sudo tee /etc/apache2/sites-available/default-ssl.conf >1 /dev/null
+EOF
+
 sudo sed -i "s|;max_input_vars = 1000 ^|max_input_vars = 5000" /etc/php/7.4/apache2/php.ini
-sudo a2ensite ijsselstreekonlineleren.nl
+sudo a2ensite 000-default.conf
+sudo a2ensite default-ssl.conf
 
 #install moodle
 wget -O moodle.tgz https://download.moodle.org/stable401/moodle-4.1.tgz
